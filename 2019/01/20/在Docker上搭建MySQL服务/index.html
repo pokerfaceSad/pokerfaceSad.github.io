@@ -6,20 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>kubeadm搭建kubernetes(1.11.5)环境 | xinyuan的blog</title>
+  <title>在Docker上搭建MySQL服务 | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前搭建k8s的环境废了很大的周折，网上一些blog总结的也是杂乱不一。有的是比较安装的比较老的版本和现在的版本安装方法有差异，有的是总结的比较简单，没有考虑到天朝特殊的网络环境，所以还是把搭建的步骤总结一下防止再走弯路。">
-<meta name="keywords" content="虚拟机,kubernetes">
+  <meta name="description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很方便，总结一下搭建的步骤和遇到的问题。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="kubeadm搭建kubernetes(1.11.5)环境">
-<meta property="og:url" content="http://yoursite.com/2019/01/09/kubeadm搭建kubernetes-1-11-5-环境/index.html">
+<meta property="og:title" content="在Docker上搭建MySQL服务">
+<meta property="og:url" content="http://yoursite.com/2019/01/20/在Docker上搭建MySQL服务/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
-<meta property="og:description" content="之前搭建k8s的环境废了很大的周折，网上一些blog总结的也是杂乱不一。有的是比较安装的比较老的版本和现在的版本安装方法有差异，有的是总结的比较简单，没有考虑到天朝特殊的网络环境，所以还是把搭建的步骤总结一下防止再走弯路。">
+<meta property="og:description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很方便，总结一下搭建的步骤和遇到的问题。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-01-11T15:47:13.173Z">
+<meta property="og:updated_time" content="2019-01-22T14:24:40.517Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="kubeadm搭建kubernetes(1.11.5)环境">
-<meta name="twitter:description" content="之前搭建k8s的环境废了很大的周折，网上一些blog总结的也是杂乱不一。有的是比较安装的比较老的版本和现在的版本安装方法有差异，有的是总结的比较简单，没有考虑到天朝特殊的网络环境，所以还是把搭建的步骤总结一下防止再走弯路。">
+<meta name="twitter:title" content="在Docker上搭建MySQL服务">
+<meta name="twitter:description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很方便，总结一下搭建的步骤和遇到的问题。">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -137,221 +136,42 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-kubeadm搭建kubernetes-1-11-5-环境" class="article article-type-post " itemscope="" itemprop="blogPost">
+            <article id="post-在Docker上搭建MySQL服务" class="article article-type-post " itemscope="" itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      kubeadm搭建kubernetes(1.11.5)环境
+      在Docker上搭建MySQL服务
     </h1>
   
 
         
-        <a href="/2019/01/09/kubeadm搭建kubernetes-1-11-5-环境/" class="archive-article-date">
-  	<time datetime="2019-01-09T08:12:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-09</time>
+        <a href="/2019/01/20/在Docker上搭建MySQL服务/" class="archive-article-date">
+  	<time datetime="2019-01-20T06:04:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-20</time>
 </a>
         
       </header>
     
     <!-- 目录内容 -->
 
-    <p class="show-toc-btn" id="show-toc-btn" onclick="showToc();" style="display:none">
-          <span class="btn-bg"></span>
-          <span class="btn-text">文章导航</span>
-          </p>
-    <div id="toc-article" class="toc-article">
-        <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
-        <strong class="toc-title">文章目录</strong>
-           <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、环境准备"><span class="toc-number">1.</span> <span class="toc-text">一、环境准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、网络设置"><span class="toc-number">2.</span> <span class="toc-text">二、网络设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-虚拟机集群组网"><span class="toc-number">2.1.</span> <span class="toc-text">1. 虚拟机集群组网</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-安装ShadowSocks"><span class="toc-number">2.2.</span> <span class="toc-text">2. 安装ShadowSocks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-关闭firewalld防火墙"><span class="toc-number">2.3.</span> <span class="toc-text">3. 关闭firewalld防火墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-禁用SELinux-Security-Enhanced-Linux"><span class="toc-number">2.4.</span> <span class="toc-text">4. 禁用SELinux(Security-Enhanced Linux)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#可能遇到的问题"><span class="toc-number">2.4.1.</span> <span class="toc-text">可能遇到的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#问题一-unknown-key"><span class="toc-number">2.4.1.1.</span> <span class="toc-text">问题一 unknown key</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#问题二-没有那个文件或目录"><span class="toc-number">2.4.1.2.</span> <span class="toc-text">问题二 没有那个文件或目录</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、安装Docker"><span class="toc-number">3.</span> <span class="toc-text">三、安装Docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-安装需要的插件"><span class="toc-number">3.1.</span> <span class="toc-text">1. 安装需要的插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-添加yum资源库"><span class="toc-number">3.2.</span> <span class="toc-text">2. 添加yum资源库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-安装Docker"><span class="toc-number">3.3.</span> <span class="toc-text">3. 安装Docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-设置iptables防火墙"><span class="toc-number">3.4.</span> <span class="toc-text">4.设置iptables防火墙</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、安装kubeadm"><span class="toc-number">4.</span> <span class="toc-text">四、安装kubeadm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-添加yum资源库"><span class="toc-number">4.1.</span> <span class="toc-text">1. 添加yum资源库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-安装kubeadm"><span class="toc-number">4.2.</span> <span class="toc-text">2. 安装kubeadm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-关闭swap"><span class="toc-number">4.3.</span> <span class="toc-text">3.关闭swap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、集群初始化"><span class="toc-number">5.</span> <span class="toc-text">五、集群初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-镜像准备"><span class="toc-number">5.1.</span> <span class="toc-text">1. 镜像准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Master的初始化"><span class="toc-number">5.2.</span> <span class="toc-text">2. Master的初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#可能遇到的问题-1"><span class="toc-number">5.2.1.</span> <span class="toc-text">可能遇到的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#WARNING-HTTPProxy"><span class="toc-number">5.2.1.1.</span> <span class="toc-text">WARNING HTTPProxy</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Node的初始化"><span class="toc-number">5.3.</span> <span class="toc-text">4.Node的初始化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、总结"><span class="toc-number">6.</span> <span class="toc-text">五、总结</span></a></li></ol>
-         </div>
-   <script type="text/javascript">
-    function showToc(){
-        var toc_article = document.getElementById("toc-article");
-        var show_toc_btn = document.getElementById("show-toc-btn");
-        toc_article.setAttribute("style","display:block");
-        show_toc_btn.setAttribute("style","display:none");
-        };
-    function showBtn(){
-        var toc_article = document.getElementById("toc-article");
-        var show_toc_btn = document.getElementById("show-toc-btn");
-        toc_article.setAttribute("style","display:none");
-        show_toc_btn.setAttribute("style","display:block");
-        };
-   </script>
-      
 <!-- 目录内容结束 -->
 
     <div class="article-entry" itemprop="articleBody">
       
-        <p>之前搭建k8s的环境废了很大的周折，网上一些blog总结的也是杂乱不一。有的是比较安装的比较老的版本和现在的版本安装方法有差异，有的是总结的比较简单，没有考虑到天朝特殊的网络环境，所以还是把搭建的步骤总结一下防止再走弯路。</p>
-<a id="more"></a>
-<h2 id="一、环境准备"><a href="#一、环境准备" class="headerlink" title="一、环境准备"></a>一、环境准备</h2><p>我是在Centos虚拟机上搭建的集群，准备的镜像是<strong>CentOS-7-x86_64-DVD-1804.iso</strong>，kubernetes的版本是<strong>1.11.5</strong>。<br><br>可以一次安装好多台虚拟机，也可以一台搭建好之后再搭建其他的，这是不影响的。<br><br></p>
-<h2 id="二、网络设置"><a href="#二、网络设置" class="headerlink" title="二、网络设置"></a>二、网络设置</h2><h3 id="1-虚拟机集群组网"><a href="#1-虚拟机集群组网" class="headerlink" title="1. 虚拟机集群组网"></a>1. 虚拟机集群组网</h3><p>刚安装好的虚拟机一般是无法访问网络的，需要进行一些设置，具体的设置方法见这篇博客<a href="https://pokerfacesad.github.io/2019/01/06/Centos7%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE/" target="_blank" rel="noopener">Centos7虚拟机网络设置</a><br><br><br>我的集群网络环境<br></p>
-<table>
-<thead>
-<tr>
-<th>主机名</th>
-<th>IP</th>
-<th>角色</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>k8s</td>
-<td>192.168.254.100</td>
-<td>master</td>
-</tr>
-<tr>
-<td>k8s1</td>
-<td>192.168.254.101</td>
-<td>node</td>
-</tr>
-<tr>
-<td>k8s2</td>
-<td>192.168.254.102</td>
-<td>node</td>
-</tr>
-<tr>
-<td>k8s3</td>
-<td>192.168.254.103</td>
-<td>node</td>
-</tr>
-</tbody>
-</table>
-<p>也可以不设置主机名，设置的主要目的是为了在同时操作多个主机时不会混淆。</p>
-<p>要设置主机名，在<strong>/etc/hosts</strong>文件中进行如下设置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</span><br><span class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</span><br><span class="line"><span class="comment"># 前面两行是默认就有的 后面三行是添加的</span></span><br><span class="line">192.168.254.100  k8s</span><br><span class="line">192.168.254.101  k8s1</span><br><span class="line">192.168.254.102  k8s2</span><br><span class="line">192.168.254.103  k8s3</span><br></pre></td></tr></table></figure>
-<p><em>注意：这里机器的角色其实还没有确定，角色的设置取决与kubeadm初始化执行的是<strong>kubeadm init</strong>还是<strong>kubeadm join</strong></em></p>
-<h3 id="2-安装ShadowSocks"><a href="#2-安装ShadowSocks" class="headerlink" title="2. 安装ShadowSocks"></a>2. 安装ShadowSocks</h3><p>因为防火长城的原因需要科学上网，所以这里先配置好代理。<br>已经写好了一个<a href="https://github.com/pokerfaceSad/Script/blob/master/installSSClient.sh" target="_blank" rel="noopener">在Centos上安装shadowsocks客户端的脚本</a>只需要按照注释填入shadowsocks服务的IP、端口、密码，然后直接运行即可</p>
-<p><em>注意：安装完成后要重新登录用户，以确保代理设置生效</em></p>
-<h3 id="3-关闭firewalld防火墙"><a href="#3-关闭firewalld防火墙" class="headerlink" title="3. 关闭firewalld防火墙"></a>3. 关闭firewalld防火墙</h3><p>为了防止防火墙导致的集群之间各个主机无法通信，直接将防火墙关闭（或者也可以将kubernetes需要的端口开放），简单起见直接关闭防火墙</p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl stop firewalld.service   <span class="comment">#停止firewall</span></span><br><span class="line">sudo systemctl <span class="built_in">disable</span> firewalld.service <span class="comment">#禁止firewall开机启动</span></span><br><span class="line">sudo firewall-cmd --state             <span class="comment">#查看防火墙状态</span></span><br></pre></td></tr></table></figure></p>
-<p>查看防火墙状态命令输出<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">not running</span><br></pre></td></tr></table></figure></p>
-<p>说明防火墙成功关闭</p>
-<h3 id="4-禁用SELinux-Security-Enhanced-Linux"><a href="#4-禁用SELinux-Security-Enhanced-Linux" class="headerlink" title="4. 禁用SELinux(Security-Enhanced Linux)"></a>4. 禁用SELinux(Security-Enhanced Linux)</h3><p>SELinux是Linux的一个文件访问权限控制系统，为了防止因为设置不当导致影响集群的工作，将其关闭</p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo setenforce 0</span><br></pre></td></tr></table></figure></p>
-<p>先将SELinux临时关闭</p>
-<p>再编辑<strong>/etc/selinux/config</strong>文件，将<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=enforcing</span><br></pre></td></tr></table></figure></p>
-<p>修改为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure></p>
-<p><em>注意：修改的是<strong>SELINUX=enforcing</strong>项，而不是最后一行的<strong>SELINUXTYPE=targeted</strong>，修改后者会导致无法开机</em></p>
-<p>创建<strong>/etc/sysctl.d/k8s.conf</strong>文件<br><br>添加内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br></pre></td></tr></table></figure></p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sysctl -p /etc/sysctl.d/k8s.conf</span><br></pre></td></tr></table></figure></p>
-<p>使修改生效</p>
-<h4 id="可能遇到的问题"><a href="#可能遇到的问题" class="headerlink" title="可能遇到的问题"></a>可能遇到的问题</h4><h5 id="问题一-unknown-key"><a href="#问题一-unknown-key" class="headerlink" title="问题一 unknown key"></a>问题一 unknown key</h5><p>报错：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">error: &quot;net.bridge.bridge-nf-call-ip6tables&quot; is an unknown key</span><br><span class="line">error: &quot;net.bridge.bridge-nf-call-iptables&quot; is an unknown key</span><br></pre></td></tr></table></figure></p>
-<p>解决方法：<br><br>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo modprobe bridge</span><br><span class="line">sudo lsmod |grep bridge</span><br><span class="line">sudo sysctl -p /etc/sysctl.d/k8s.conf</span><br></pre></td></tr></table></figure></p>
-<h5 id="问题二-没有那个文件或目录"><a href="#问题二-没有那个文件或目录" class="headerlink" title="问题二 没有那个文件或目录"></a>问题二 没有那个文件或目录</h5><p>报错：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sysctl: cannot <span class="built_in">stat</span> /proc/sys/net/bridge/bridge-nf-call-ip6tables: 没有那个文件或目录</span><br><span class="line">sysctl: cannot <span class="built_in">stat</span> /proc/sys/net/bridge/bridge-nf-call-iptables: 没有那个文件或目录</span><br></pre></td></tr></table></figure></p>
-<p>解决方法：<br><br>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">modprobe br_netfilter</span><br><span class="line">ls /proc/sys/net/bridge</span><br><span class="line">sudo sysctl -p /etc/sysctl.d/k8s.conf</span><br></pre></td></tr></table></figure></p>
-<h2 id="三、安装Docker"><a href="#三、安装Docker" class="headerlink" title="三、安装Docker"></a>三、安装Docker</h2><h3 id="1-安装需要的插件"><a href="#1-安装需要的插件" class="headerlink" title="1. 安装需要的插件"></a>1. 安装需要的插件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></table></figure>
-<h3 id="2-添加yum资源库"><a href="#2-添加yum资源库" class="headerlink" title="2. 添加yum资源库"></a>2. 添加yum资源库</h3><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">suod yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">```</span><br><span class="line">添加yum资源库文件</span><br><span class="line"></span><br><span class="line">命令行执行</span><br><span class="line">```bash</span><br><span class="line">sudo yum makecache fast</span><br></pre></td></tr></table></figure></p>
-<p>生成缓存</p>
-<p><em>注意：生成缓存是需要访问刚才添加的docker源的，如果没有设置代理这里生成缓存会报错</em></p>
-<h3 id="3-安装Docker"><a href="#3-安装Docker" class="headerlink" title="3. 安装Docker"></a>3. 安装Docker</h3><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y --<span class="built_in">setopt</span>=obsoletes=0 \</span><br><span class="line">  docker-ce-17.03.2.ce-1.el7.centos \</span><br><span class="line">  docker-ce-selinux-17.03.2.ce-1.el7.centos</span><br></pre></td></tr></table></figure></p>
-<p>安装Docker17.03.2</p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start docker</span><br></pre></td></tr></table></figure></p>
-<p>启动docker</p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status docker</span><br></pre></td></tr></table></figure></p>
-<p>查看docker运行状态</p>
-<p>如果看到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Active: active (running)</span><br></pre></td></tr></table></figure></p>
-<p>说明docker启动成功</p>
-<h3 id="4-设置iptables防火墙"><a href="#4-设置iptables防火墙" class="headerlink" title="4.设置iptables防火墙"></a>4.设置iptables防火墙</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为docker服务创建一个systemd插件目录</span></span><br><span class="line">mkdir -p /etc/systemd/system/docker.service.d</span><br><span class="line"><span class="comment"># 创建一个/etc/systemd/system/docker.service.d/port.conf配置文件</span></span><br><span class="line">vi /etc/systemd/system/docker.service.d/port.conf</span><br></pre></td></tr></table></figure>
-<p>加入以下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExecStartPost=/usr/sbin/iptables -P FORWARD ACCEPT</span><br></pre></td></tr></table></figure></p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload <span class="comment"># 重新加载服务的配置文件</span></span><br><span class="line">systemctl restart docker <span class="comment"># 重新启动docker服务</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="四、安装kubeadm"><a href="#四、安装kubeadm" class="headerlink" title="四、安装kubeadm"></a>四、安装kubeadm</h2><h3 id="1-添加yum资源库"><a href="#1-添加yum资源库" class="headerlink" title="1. 添加yum资源库"></a>1. 添加yum资源库</h3><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/yum.repos.d/kubernetes.repo</span><br></pre></td></tr></table></figure></p>
-<p>创建资源库文件</p>
-<p>填入如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">repo_gpgcheck=1</span><br><span class="line">gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg</span><br><span class="line">        https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg</span><br></pre></td></tr></table></figure></p>
-<p>和Docker的安装一样需要创建缓存，如果没有设置代理的话创建缓存可能会失败</p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum makecache fast</span><br></pre></td></tr></table></figure></p>
-<p>创建缓存</p>
-<h3 id="2-安装kubeadm"><a href="#2-安装kubeadm" class="headerlink" title="2. 安装kubeadm"></a>2. 安装kubeadm</h3><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y kubelet-1.11.5 kubeadm-1.11.5 kubectl-1.11.5</span><br></pre></td></tr></table></figure></p>
-<h3 id="3-关闭swap"><a href="#3-关闭swap" class="headerlink" title="3.关闭swap"></a>3.关闭swap</h3><pre><code>Swap分区，即交换区，系统在物理内存不够时，与Swap进行交换。
-</code></pre><p>从kubernetes1.8开始，kubelet的启动要求系统关闭Swap</p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">swapoff -a</span><br></pre></td></tr></table></figure></p>
-<p>编辑<strong>/etc/fstab</strong>文件，防止机器重启后swap自动启动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#</span><br><span class="line"># /etc/fstab</span><br><span class="line"># Created by anaconda on Sat Jan  5 22:28:32 2019</span><br><span class="line">#</span><br><span class="line"># Accessible filesystems, by reference, are maintained under &apos;/dev/disk&apos;</span><br><span class="line"># See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info</span><br><span class="line">#</span><br><span class="line">/dev/mapper/centos-root /                       xfs     defaults        0 0</span><br><span class="line">UUID=f149b800-aabe-4bf9-9094-bcece365e373 /boot                   xfs     defaults        0 0</span><br><span class="line">/dev/mapper/centos-swap swap                    swap    defaults        0 0</span><br></pre></td></tr></table></figure>
-<p>将最后一行的内容注释掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#</span><br><span class="line"># /etc/fstab</span><br><span class="line"># Created by anaconda on Sat Jan  5 22:28:32 2019</span><br><span class="line">#</span><br><span class="line"># Accessible filesystems, by reference, are maintained under &apos;/dev/disk&apos;</span><br><span class="line"># See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info</span><br><span class="line">#</span><br><span class="line">/dev/mapper/centos-root /                       xfs     defaults        0 0</span><br><span class="line">UUID=f149b800-aabe-4bf9-9094-bcece365e373 /boot                   xfs     defaults        0 0</span><br><span class="line"># /dev/mapper/centos-swap swap                    swap    defaults        0 0</span><br></pre></td></tr></table></figure></p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">free -m</span><br></pre></td></tr></table></figure></p>
-<p>查看内存使用情况<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:            974         134         170           7         669         620</span><br><span class="line">Swap:             0           0           0</span><br></pre></td></tr></table></figure></p>
-<p>可以看到swap一项都为0，说明已经关闭</p>
-<p>修改kubernetes配置文件<strong>vi /etc/sysctl.d/k8s.conf</strong>，添加一行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vm.swappiness=0</span><br></pre></td></tr></table></figure>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -p /etc/sysctl.d/k8s.conf</span><br></pre></td></tr></table></figure></p>
-<p>使之生效</p>
-<h2 id="五、集群初始化"><a href="#五、集群初始化" class="headerlink" title="五、集群初始化"></a>五、集群初始化</h2><p></p>
-<h3 id="1-镜像准备"><a href="#1-镜像准备" class="headerlink" title="1. 镜像准备"></a>1. 镜像准备</h3><p>kubeadm在初始化集群的过程中会拉取一些需要的镜像，1.11.5需要的镜像有</p>
-<table>
-<thead>
-<tr>
-<th>镜像名称</th>
-<th>版本</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>k8s.gcr.io/kube-proxy-amd64</td>
-<td>v1.11.5</td>
-</tr>
-<tr>
-<td>k8s.gcr.io/kube-apiserver-amd64</td>
-<td>v1.11.5</td>
-</tr>
-<tr>
-<td>k8s.gcr.io/kube-controller-manager-amd64</td>
-<td>v1.11.5</td>
-</tr>
-<tr>
-<td>k8s.gcr.io/kube-scheduler-amd64</td>
-<td>v1.11.5</td>
-</tr>
-<tr>
-<td>k8s.gcr.io/etcd-amd64</td>
-<td>3.2.18</td>
-</tr>
-<tr>
-<td>k8s.gcr.io/coredns</td>
-<td>1.1.3</td>
-</tr>
-<tr>
-<td>k8s.gcr.io/pause</td>
-<td>3.1</td>
-</tr>
-</tbody>
-</table>
-<p>这些镜像都是存储在Google Container Registry(<a href="https://cloud.google.com/container-registry/" target="_blank" rel="noopener">gcr.io</a>)这个谷歌的镜像库里，这个网站被防火长城拦截了，docker就算设置了代理也总是拉不下来，所以我的解决方法的步骤是</p>
-<ul>
-<li>首先用国外VPS从gcr.io上拉取镜像</li>
-<li>然后将国外VPS上的镜像推送到阿里云镜像仓库上去</li>
-<li>最后本地从阿里云镜像仓库上拉取镜像</li>
-</ul>
-<p>如果要安装其他版本的k8s环境可以按照上述步骤进行拉取</p>
-<p>如果是安装1.11.5版本，直接在虚拟机上运行这个<a href="https://github.com/pokerfaceSad/Script/blob/master/getAliImage.sh" target="_blank" rel="noopener">拉取k8s1.11.5所需镜像的脚本</a>就能够完成镜像拉取</p>
-<p><em>注意：运行镜像拉取脚本之前要保证docker在运行状态</em></p>
-<h3 id="2-Master的初始化"><a href="#2-Master的初始化" class="headerlink" title="2. Master的初始化"></a>2. Master的初始化</h3><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init   --kubernetes-version=v1.11.5   --pod-network-cidr=10.244.0.0/16 --token-ttl 0</span><br></pre></td></tr></table></figure></p>
-<h4 id="可能遇到的问题-1"><a href="#可能遇到的问题-1" class="headerlink" title="可能遇到的问题"></a>可能遇到的问题</h4><h5 id="WARNING-HTTPProxy"><a href="#WARNING-HTTPProxy" class="headerlink" title="WARNING HTTPProxy"></a>WARNING HTTPProxy</h5><p>报错：<br>输出WARNING<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[WARNING HTTPProxy]: Connection to &quot;https://192.168.254.104&quot; uses proxy &quot;http://127.0.0.1:8118&quot;. If that is not intended, adjust your proxy settings</span><br><span class="line">[WARNING HTTPProxyCIDR]: connection to &quot;10.96.0.0/12&quot; uses proxy &quot;http://127.0.0.1:8118&quot;. This may lead to malfunctional cluster setup. Make sure that Pod and Services IP ranges specified correctly as exceptions in proxy configuration</span><br><span class="line">[WARNING HTTPProxyCIDR]: connection to &quot;10.244.0.0/16&quot; uses proxy &quot;http://127.0.0.1:8118&quot;. This may lead to malfunctional cluster setup. Make sure that Pod and Services IP ranges specified correctly as exceptions in proxy configuration</span><br></pre></td></tr></table></figure></p>
-<p>如果输出上面的警告信息，就是说访问本机和子网也走了代理</p>
-<p>解决方法：要将警告信息里的IP加入到<strong>no_proxy</strong>环境变量中</p>
-<p>编辑<strong>/etc/profile</strong>文件，修改<strong>no_proxy</strong>在后面加上警告信息中的IP</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export no_proxy=localhost,172.16.0.0/16,192.168.0.0/16.,127.0.0.1,10.10.0.0/16,192.168.254.104,10.96.0.0/12,10.244.0.0/16</span><br></pre></td></tr></table></figure>
-<p>最后三项是新添加的,修改完成后保存退出</p>
-<p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure></p>
-<p>使修改生效</p>
-<p><strong><em>注意：修改过后重新进行登录保证环境变量更新</em></strong></p>
-<p>如果之前的初始化出了问题<br><br>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm reset</span><br></pre></td></tr></table></figure></p>
-<p>清除初始化信息<br><br>重新执行初始化命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init   --kubernetes-version=v1.11.5   --pod-network-cidr=10.244.0.0/16 --token-ttl 0</span><br></pre></td></tr></table></figure></p>
-<p>如果看到如下输出说明初始化成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">[init] using Kubernetes version: v1.11.5</span><br><span class="line">[preflight] running pre-flight checks</span><br><span class="line">	[WARNING Service-Docker]: docker service is not enabled, please run &apos;systemctl enable docker.service&apos;</span><br><span class="line">I0109 23:33:56.711267    5222 kernel_validator.go:81] Validating kernel version</span><br><span class="line">I0109 23:33:56.711355    5222 kernel_validator.go:96] Validating kernel config</span><br><span class="line">	[WARNING Service-Kubelet]: kubelet service is not enabled, please run &apos;systemctl enable kubelet.service&apos;</span><br><span class="line">[preflight/images] Pulling images required for setting up a Kubernetes cluster</span><br><span class="line">[preflight/images] This might take a minute or two, depending on the speed of your internet connection</span><br><span class="line">[preflight/images] You can also perform this action in beforehand using &apos;kubeadm config images pull&apos;</span><br><span class="line">[kubelet] Writing kubelet environment file with flags to file &quot;/var/lib/kubelet/kubeadm-flags.env&quot;</span><br><span class="line">[kubelet] Writing kubelet configuration to file &quot;/var/lib/kubelet/config.yaml&quot;</span><br><span class="line">[preflight] Activating the kubelet service</span><br><span class="line">[certificates] Generated ca certificate and key.</span><br><span class="line">[certificates] Generated apiserver certificate and key.</span><br><span class="line">[certificates] apiserver serving cert is signed for DNS names [localhost.localdomain kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 192.168.254.104]</span><br><span class="line">[certificates] Generated apiserver-kubelet-client certificate and key.</span><br><span class="line">[certificates] Generated sa key and public key.</span><br><span class="line">[certificates] Generated front-proxy-ca certificate and key.</span><br><span class="line">[certificates] Generated front-proxy-client certificate and key.</span><br><span class="line">[certificates] Generated etcd/ca certificate and key.</span><br><span class="line">[certificates] Generated etcd/server certificate and key.</span><br><span class="line">[certificates] etcd/server serving cert is signed for DNS names [localhost.localdomain localhost] and IPs [127.0.0.1 ::1]</span><br><span class="line">[certificates] Generated etcd/peer certificate and key.</span><br><span class="line">[certificates] etcd/peer serving cert is signed for DNS names [localhost.localdomain localhost] and IPs [192.168.254.104 127.0.0.1 ::1]</span><br><span class="line">[certificates] Generated etcd/healthcheck-client certificate and key.</span><br><span class="line">[certificates] Generated apiserver-etcd-client certificate and key.</span><br><span class="line">[certificates] valid certificates and keys now exist in &quot;/etc/kubernetes/pki&quot;</span><br><span class="line">[kubeconfig] Wrote KubeConfig file to disk: &quot;/etc/kubernetes/admin.conf&quot;</span><br><span class="line">[kubeconfig] Wrote KubeConfig file to disk: &quot;/etc/kubernetes/kubelet.conf&quot;</span><br><span class="line">[kubeconfig] Wrote KubeConfig file to disk: &quot;/etc/kubernetes/controller-manager.conf&quot;</span><br><span class="line">[kubeconfig] Wrote KubeConfig file to disk: &quot;/etc/kubernetes/scheduler.conf&quot;</span><br><span class="line">[controlplane] wrote Static Pod manifest for component kube-apiserver to &quot;/etc/kubernetes/manifests/kube-apiserver.yaml&quot;</span><br><span class="line">[controlplane] wrote Static Pod manifest for component kube-controller-manager to &quot;/etc/kubernetes/manifests/kube-controller-manager.yaml&quot;</span><br><span class="line">[controlplane] wrote Static Pod manifest for component kube-scheduler to &quot;/etc/kubernetes/manifests/kube-scheduler.yaml&quot;</span><br><span class="line">[etcd] Wrote Static Pod manifest for a local etcd instance to &quot;/etc/kubernetes/manifests/etcd.yaml&quot;</span><br><span class="line">[init] waiting for the kubelet to boot up the control plane as Static Pods from directory &quot;/etc/kubernetes/manifests&quot;</span><br><span class="line">[init] this might take a minute or longer if the control plane images have to be pulled</span><br><span class="line">[apiclient] All control plane components are healthy after 41.504503 seconds</span><br><span class="line">[uploadconfig] storing the configuration used in ConfigMap &quot;kubeadm-config&quot; in the &quot;kube-system&quot; Namespace</span><br><span class="line">[kubelet] Creating a ConfigMap &quot;kubelet-config-1.11&quot; in namespace kube-system with the configuration for the kubelets in the cluster</span><br><span class="line">[markmaster] Marking the node localhost.localdomain as master by adding the label &quot;node-role.kubernetes.io/master=&apos;&apos;&quot;</span><br><span class="line">[markmaster] Marking the node localhost.localdomain as master by adding the taints [node-role.kubernetes.io/master:NoSchedule]</span><br><span class="line">[patchnode] Uploading the CRI Socket information &quot;/var/run/dockershim.sock&quot; to the Node API object &quot;localhost.localdomain&quot; as an annotation</span><br><span class="line">[bootstraptoken] using token: npgwol.zbobmb8468e8iq4t</span><br><span class="line">[bootstraptoken] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials</span><br><span class="line">[bootstraptoken] configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token</span><br><span class="line">[bootstraptoken] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster</span><br><span class="line">[bootstraptoken] creating the &quot;cluster-info&quot; ConfigMap in the &quot;kube-public&quot; namespace</span><br><span class="line">[addons] Applied essential addon: CoreDNS</span><br><span class="line">[addons] Applied essential addon: kube-proxy</span><br><span class="line"></span><br><span class="line">Your Kubernetes master has initialized successfully!</span><br><span class="line"></span><br><span class="line">To start using your cluster, you need to run the following as a regular user:</span><br><span class="line"></span><br><span class="line">  mkdir -p $HOME/.kube</span><br><span class="line">  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">  sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br><span class="line"></span><br><span class="line">You should now deploy a pod network to the cluster.</span><br><span class="line">Run &quot;kubectl apply -f [podnetwork].yaml&quot; with one of the options listed at:</span><br><span class="line">  https://kubernetes.io/docs/concepts/cluster-administration/addons/</span><br><span class="line"></span><br><span class="line">You can now join any number of machines by running the following on each node</span><br><span class="line">as root:</span><br><span class="line"></span><br><span class="line">  kubeadm join 192.168.254.104:6443 --token npgwol.zbobmb8468e8iq4t --discovery-token-ca-cert-hash sha256:d096a99884b8a9c24ce4c119f560b49e00fdfc6b399f20d5b7091c2a0e8505cb</span><br></pre></td></tr></table></figure></p>
-<p>最后输出的</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm join 192.168.254.104:6443 --token npgwol.zbobmb8468e8iq4t --discovery-token-ca-cert-hash sha256:d096a99884b8a9c24ce4c119f560b49e00fdfc6b399f20d5b7091c2a0e8505cb</span><br></pre></td></tr></table></figure>
-<p>就是其他节点加入这个集群的命令<br></p>
-<h3 id="4-Node的初始化"><a href="#4-Node的初始化" class="headerlink" title="4.Node的初始化"></a>4.Node的初始化</h3><p>在Node上也同样执行以上的步骤到完成<strong>镜像准备</strong>，然后执行在Master初始化时得到的<strong>kubeadm join</strong>命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm join 192.168.254.104:6443 --token npgwol.zbobmb8468e8iq4t --discovery-token-ca-cert-hash sha256:d096a99884b8a9c24ce4c119f560b49e00fdfc6b399f20d5b7091c2a0e8505cb</span><br></pre></td></tr></table></figure>
-<p>这个命令如果忘记记录，可以通过在master节点上执行下面的命令得到<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm token create --<span class="built_in">print</span>-join-command</span><br></pre></td></tr></table></figure></p>
-<p><strong><em>注意：Node的初始化也要注意no_proxy环境变量的问题</em></strong></p>
-<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>这次安装k8s的环境前后花了很多时间</p>
-<ul>
-<li>开始由于防火长城的原因拉不到gcr.io上的镜像，找了很多教程，在VPS上装了Docker，注册了阿里云仓库，写了镜像拉取脚本，遂解决。过程中很绝望。。。。</li>
-<li>最后因为没有注意初始化时报出的<strong>no_proxy WARNING</strong>导致一直没有成功，在各种论坛上找都没有能够解决的，最后是自己看错误日志才发现了是代理的问题，遂解决。</li>
-</ul>
+        <p>最近在玩Docker,发现这个东西确实方便，部署迁移都很方便，总结一下搭建的步骤和遇到的问题。<br><a id="more"></a></p>
+<h2 id="拉取相关镜像"><a href="#拉取相关镜像" class="headerlink" title="拉取相关镜像"></a>拉取相关镜像</h2><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull mysql:5.5</span><br></pre></td></tr></table></figure></p>
+<p><br>后面加了<strong>tag 5.5</strong>，如果使用最新版本<strong>latest 8.0</strong>用以前的<strong>NotePad</strong>会出问题，好像是因为新版本的MySQL有SSL认证功能的关系老版本的驱动是连不上的。</p>
+<p>这个官方的镜像只支持<strong>X86</strong>平台，不支持<strong>ARM</strong>平台，无法在树莓派上使用，要在树莓派上用Docker搭建MySQL需要<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull hypriot/rpi-mysql</span><br></pre></td></tr></table></figure></p>
+<h2 id="创建容器"><a href="#创建容器" class="headerlink" title="创建容器"></a>创建容器</h2><p>为了能够将容器数据持久化，需要为其绑定数据卷。<br>MySQL的默认编码方式是<strong>latin1</strong>，通过添加参数将字符集设置为<strong>utf8</strong>，并且通过<strong>-p 宿主机端口:容器端口</strong>将MySQL服务映射到宿主机的<strong>3306端口</strong>上</p>
+<p><strong>Mac OS</strong>或其他<strong>X86</strong>平台上：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 3306:3306 --name mysql -v <span class="variable">$PWD</span>/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=password -d mysql:5.5 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure></p>
+<p><strong>树莓派</strong>或其他<strong>ARM</strong>平台上<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 3306:3306 --name mysql --privileged=<span class="literal">true</span> -v <span class="variable">$PWD</span>/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=password -d hypriot/rpi-mysql:latest --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure></p>
+<p>树莓派系统是CentOS7，系统的SELinux功能会阻止Docker挂载数据卷，所以需要添加<strong>–privileged=true</strong>参数赋予权限</p>
+<h2 id="MySQL数据迁移"><a href="#MySQL数据迁移" class="headerlink" title="MySQL数据迁移"></a>MySQL数据迁移</h2><h3 id="导出所有数据库"><a href="#导出所有数据库" class="headerlink" title="导出所有数据库"></a>导出所有数据库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -u root -p --all-databases &gt; all.sql</span><br></pre></td></tr></table></figure>
+<h3 id="导出单个数据库"><a href="#导出单个数据库" class="headerlink" title="导出单个数据库"></a>导出单个数据库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -u root -p <span class="built_in">test</span> &gt; test.sql</span><br></pre></td></tr></table></figure>
+<h3 id="导入所有数据库"><a href="#导入所有数据库" class="headerlink" title="导入所有数据库"></a>导入所有数据库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p &lt; all.sql</span><br></pre></td></tr></table></figure>
+<h3 id="导入单个数据库"><a href="#导入单个数据库" class="headerlink" title="导入单个数据库"></a>导入单个数据库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p <span class="built_in">test</span> &lt; test.sql</span><br></pre></td></tr></table></figure>
 
       
 
@@ -381,21 +201,6 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">虚拟机</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kubernetes</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
@@ -409,18 +214,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/01/20/在Docker上搭建MySQL服务/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          在Docker上搭建MySQL服务
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/01/06/Centos7虚拟机网络设置/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Centos7虚拟机网络设置</div>
+    <a href="/2019/01/09/kubeadm搭建kubernetes-1-11-5-环境/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">kubeadm搭建kubernetes(1.11.5)环境</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -439,19 +235,6 @@
             </div>
         </div>
         
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、环境准备"><span class="toc-number">1.</span> <span class="toc-text">一、环境准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、网络设置"><span class="toc-number">2.</span> <span class="toc-text">二、网络设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-虚拟机集群组网"><span class="toc-number">2.1.</span> <span class="toc-text">1. 虚拟机集群组网</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-安装ShadowSocks"><span class="toc-number">2.2.</span> <span class="toc-text">2. 安装ShadowSocks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-关闭firewalld防火墙"><span class="toc-number">2.3.</span> <span class="toc-text">3. 关闭firewalld防火墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-禁用SELinux-Security-Enhanced-Linux"><span class="toc-number">2.4.</span> <span class="toc-text">4. 禁用SELinux(Security-Enhanced Linux)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#可能遇到的问题"><span class="toc-number">2.4.1.</span> <span class="toc-text">可能遇到的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#问题一-unknown-key"><span class="toc-number">2.4.1.1.</span> <span class="toc-text">问题一 unknown key</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#问题二-没有那个文件或目录"><span class="toc-number">2.4.1.2.</span> <span class="toc-text">问题二 没有那个文件或目录</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、安装Docker"><span class="toc-number">3.</span> <span class="toc-text">三、安装Docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-安装需要的插件"><span class="toc-number">3.1.</span> <span class="toc-text">1. 安装需要的插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-添加yum资源库"><span class="toc-number">3.2.</span> <span class="toc-text">2. 添加yum资源库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-安装Docker"><span class="toc-number">3.3.</span> <span class="toc-text">3. 安装Docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-设置iptables防火墙"><span class="toc-number">3.4.</span> <span class="toc-text">4.设置iptables防火墙</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、安装kubeadm"><span class="toc-number">4.</span> <span class="toc-text">四、安装kubeadm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-添加yum资源库"><span class="toc-number">4.1.</span> <span class="toc-text">1. 添加yum资源库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-安装kubeadm"><span class="toc-number">4.2.</span> <span class="toc-text">2. 安装kubeadm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-关闭swap"><span class="toc-number">4.3.</span> <span class="toc-text">3.关闭swap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、集群初始化"><span class="toc-number">5.</span> <span class="toc-text">五、集群初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-镜像准备"><span class="toc-number">5.1.</span> <span class="toc-text">1. 镜像准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Master的初始化"><span class="toc-number">5.2.</span> <span class="toc-text">2. Master的初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#可能遇到的问题-1"><span class="toc-number">5.2.1.</span> <span class="toc-text">可能遇到的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#WARNING-HTTPProxy"><span class="toc-number">5.2.1.1.</span> <span class="toc-text">WARNING HTTPProxy</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Node的初始化"><span class="toc-number">5.3.</span> <span class="toc-text">4.Node的初始化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、总结"><span class="toc-number">6.</span> <span class="toc-text">五、总结</span></a></li></ol>
-                    </div>
-                </span>
-            </div>
-        </div>
         
     </div>
 </aside>
