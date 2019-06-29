@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="xinyuan的blog">
 <meta property="og:description" content="之前搭建k8s的环境废了很大的周折，网上一些blog总结的也是杂乱不一。有的是比较安装的比较老的版本和现在的版本安装方法有差异，有的是总结的比较简单，没有考虑到天朝特殊的网络环境，所以还是把搭建的步骤总结一下防止再走弯路。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-01-11T15:47:13.173Z">
+<meta property="og:updated_time" content="2019-06-29T04:59:57.112Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubeadm搭建kubernetes(1.11.5)环境">
 <meta name="twitter:description" content="之前搭建k8s的环境废了很大的周折，网上一些blog总结的也是杂乱不一。有的是比较安装的比较老的版本和现在的版本安装方法有差异，有的是总结的比较简单，没有考虑到天朝特殊的网络环境，所以还是把搭建的步骤总结一下防止再走弯路。">
@@ -244,7 +244,8 @@
 <h5 id="问题二-没有那个文件或目录"><a href="#问题二-没有那个文件或目录" class="headerlink" title="问题二 没有那个文件或目录"></a>问题二 没有那个文件或目录</h5><p>报错：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sysctl: cannot <span class="built_in">stat</span> /proc/sys/net/bridge/bridge-nf-call-ip6tables: 没有那个文件或目录</span><br><span class="line">sysctl: cannot <span class="built_in">stat</span> /proc/sys/net/bridge/bridge-nf-call-iptables: 没有那个文件或目录</span><br></pre></td></tr></table></figure></p>
 <p>解决方法：<br><br>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">modprobe br_netfilter</span><br><span class="line">ls /proc/sys/net/bridge</span><br><span class="line">sudo sysctl -p /etc/sysctl.d/k8s.conf</span><br></pre></td></tr></table></figure></p>
 <h2 id="三、安装Docker"><a href="#三、安装Docker" class="headerlink" title="三、安装Docker"></a>三、安装Docker</h2><h3 id="1-安装需要的插件"><a href="#1-安装需要的插件" class="headerlink" title="1. 安装需要的插件"></a>1. 安装需要的插件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></table></figure>
-<h3 id="2-添加yum资源库"><a href="#2-添加yum资源库" class="headerlink" title="2. 添加yum资源库"></a>2. 添加yum资源库</h3><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">suod yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">```</span><br><span class="line">添加yum资源库文件</span><br><span class="line"></span><br><span class="line">命令行执行</span><br><span class="line">```bash</span><br><span class="line">sudo yum makecache fast</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-添加yum资源库"><a href="#2-添加yum资源库" class="headerlink" title="2. 添加yum资源库"></a>2. 添加yum资源库</h3><p>添加yum资源库文件,命令行执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">  https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">sudo yum makecache fast</span><br></pre></td></tr></table></figure>
 <p>生成缓存</p>
 <p><em>注意：生成缓存是需要访问刚才添加的docker源的，如果没有设置代理这里生成缓存会报错</em></p>
 <h3 id="3-安装Docker"><a href="#3-安装Docker" class="headerlink" title="3. 安装Docker"></a>3. 安装Docker</h3><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y --<span class="built_in">setopt</span>=obsoletes=0 \</span><br><span class="line">  docker-ce-17.03.2.ce-1.el7.centos \</span><br><span class="line">  docker-ce-selinux-17.03.2.ce-1.el7.centos</span><br></pre></td></tr></table></figure></p>
@@ -534,6 +535,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">虚拟机</a>
               </li>
              
@@ -543,10 +548,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">kubernetes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
             
             <div class="clearfix"></div>
