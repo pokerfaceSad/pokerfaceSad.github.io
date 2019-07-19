@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>在Docker上搭建MySQL服务 | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很方便，总结一下搭建的步骤和遇到的问题。">
+  <meta name="description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很舒服，总结一下搭建的步骤和遇到的问题。">
 <meta name="keywords" content="Docker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在Docker上搭建MySQL服务">
 <meta property="og:url" content="http://yoursite.com/2019/01/20/在Docker上搭建MySQL服务/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
-<meta property="og:description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很方便，总结一下搭建的步骤和遇到的问题。">
+<meta property="og:description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很舒服，总结一下搭建的步骤和遇到的问题。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-01-22T14:35:56.943Z">
+<meta property="og:updated_time" content="2019-07-19T02:29:47.506Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在Docker上搭建MySQL服务">
-<meta name="twitter:description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很方便，总结一下搭建的步骤和遇到的问题。">
+<meta name="twitter:description" content="最近在玩Docker,发现这个东西确实方便，部署迁移都很舒服，总结一下搭建的步骤和遇到的问题。">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -161,7 +161,7 @@
 
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近在玩Docker,发现这个东西确实方便，部署迁移都很方便，总结一下搭建的步骤和遇到的问题。<br><a id="more"></a></p>
+        <p>最近在玩Docker,发现这个东西确实方便，部署迁移都很舒服，总结一下搭建的步骤和遇到的问题。<br><a id="more"></a></p>
 <h2 id="拉取MySQL镜像"><a href="#拉取MySQL镜像" class="headerlink" title="拉取MySQL镜像"></a>拉取MySQL镜像</h2><p>命令行执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull mysql:5.5</span><br></pre></td></tr></table></figure></p>
 <p><br>后面加了<strong>tag 5.5</strong>，如果使用最新版本<strong>latest 8.0</strong>用以前的<strong>NotePad</strong>会出问题，好像是因为新版本的MySQL有SSL认证功能的关系老版本的驱动是连不上的。</p>
 <p>这个官方的镜像只支持<strong>X86</strong>平台，不支持<strong>ARM</strong>平台，无法在树莓派上使用，要在树莓派上用Docker搭建MySQL需要<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull hypriot/rpi-mysql</span><br></pre></td></tr></table></figure></p>
@@ -211,6 +211,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/07/19/matplotlib画图越来越慢？/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          matplotlib画图越来越慢？
+        
+      </div>
+    </a>
   
   
     <a href="/2019/01/09/kubeadm搭建kubernetes-1-11-5-环境/" id="article-nav-older" class="article-nav-link-wrap">
@@ -334,6 +343,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">matplotlib</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">BUG</a>
+              </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">虚拟机</a>
