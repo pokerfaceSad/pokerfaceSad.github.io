@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>记一个愚蠢的BUG | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。 引以为戒，以后">
-<meta name="keywords" content="BUG,tensorflow,python,强化学习">
+  <meta name="description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要">
+<meta name="keywords" content="tensorflow,python,强化学习,BUG">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一个愚蠢的BUG">
 <meta property="og:url" content="http://yoursite.com/2019/09/03/记一个愚蠢的BUG/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
-<meta property="og:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。 引以为戒，以后">
+<meta property="og:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-03T08:58:23.810Z">
+<meta property="og:updated_time" content="2019-09-03T12:23:40.319Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记一个愚蠢的BUG">
-<meta name="twitter:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。 引以为戒，以后">
+<meta name="twitter:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -161,8 +161,7 @@
 
     <div class="article-entry" itemprop="articleBody">
       
-        <p>昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。<br>查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。</p>
-<p>引以为戒，以后要注意代码同步。<br><a id="more"></a></p>
+        <p>昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。<br><br>查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。<br><br>引以为戒，以后要注意代码同步。<br><a id="more"></a></p>
 <h2 id="记录一下tensorflow中模型持久化和tensorboard可视化的方法"><a href="#记录一下tensorflow中模型持久化和tensorboard可视化的方法" class="headerlink" title="记录一下tensorflow中模型持久化和tensorboard可视化的方法"></a>记录一下tensorflow中模型持久化和tensorboard可视化的方法</h2><h2 id="1-模型存储"><a href="#1-模型存储" class="headerlink" title="1. 模型存储"></a>1. 模型存储</h2><p>在网络的构造函数中创建一个saver成员变量，其中<em>max_to_keep</em>参数是保存模型文件数量的最大上限，设为<em>None</em>则无上限。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.saver = tf.train.Saver(max_to_keep=<span class="keyword">None</span>)</span><br></pre></td></tr></table></figure>
 <p>需要存储模型时，调用其save方法，将模型存储到ckpt文件中。一般会在训练N个周期后(如每100次更新)存储一次。</p>
@@ -186,10 +185,6 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">BUG</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tensorflow</a>
         		</li>
       		 
@@ -199,6 +194,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">强化学习</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">BUG</a>
         		</li>
       		
 		</ul>
@@ -353,15 +352,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">matplotlib</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">BUG</a>
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -377,7 +368,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color4">BUG</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">matplotlib</a>
               </li>
             
             <div class="clearfix"></div>
