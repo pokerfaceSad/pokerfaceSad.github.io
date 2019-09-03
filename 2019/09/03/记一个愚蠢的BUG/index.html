@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>记一个愚蠢的BUG | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要">
-<meta name="keywords" content="tensorflow,python,强化学习,BUG">
+  <meta name="description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要注意代码同步。">
+<meta name="keywords" content="BUG,tensorflow,python,强化学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一个愚蠢的BUG">
 <meta property="og:url" content="http://yoursite.com/2019/09/03/记一个愚蠢的BUG/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
-<meta property="og:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要">
+<meta property="og:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要注意代码同步。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-03T12:23:40.319Z">
+<meta property="og:updated_time" content="2019-09-03T13:51:08.374Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记一个愚蠢的BUG">
-<meta name="twitter:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要">
+<meta name="twitter:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要注意代码同步。">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -161,17 +161,17 @@
 
     <div class="article-entry" itemprop="articleBody">
       
-        <p>昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。<br><br>查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。<br><br>引以为戒，以后要注意代码同步。<br><a id="more"></a></p>
-<h2 id="记录一下tensorflow中模型持久化和tensorboard可视化的方法"><a href="#记录一下tensorflow中模型持久化和tensorboard可视化的方法" class="headerlink" title="记录一下tensorflow中模型持久化和tensorboard可视化的方法"></a>记录一下tensorflow中模型持久化和tensorboard可视化的方法</h2><h2 id="1-模型存储"><a href="#1-模型存储" class="headerlink" title="1. 模型存储"></a>1. 模型存储</h2><p>在网络的构造函数中创建一个saver成员变量，其中<em>max_to_keep</em>参数是保存模型文件数量的最大上限，设为<em>None</em>则无上限。</p>
+        <p>昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。<br><br>查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。<br><br>引以为戒，以后要注意代码同步。<br><a id="more"></a></p>
+<h2 id="记录一下tensorflow中模型持久化和tensorboard可视化的方法"><a href="#记录一下tensorflow中模型持久化和tensorboard可视化的方法" class="headerlink" title="记录一下tensorflow中模型持久化和tensorboard可视化的方法"></a>记录一下tensorflow中模型持久化和tensorboard可视化的方法</h2><h2 id="1-模型存储"><a href="#1-模型存储" class="headerlink" title="1. 模型存储"></a>1. 模型存储</h2><p>在网络的构造函数中创建一个saver成员变量，其中<em>max_to_keep</em>参数是保存模型文件数量的最大上限，设为<em>None</em>则无上限。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.saver = tf.train.Saver(max_to_keep=<span class="keyword">None</span>)</span><br></pre></td></tr></table></figure>
-<p>需要存储模型时，调用其save方法，将模型存储到ckpt文件中。一般会在训练N个周期后(如每100次更新)存储一次。</p>
+<p>需要存储模型时，调用其save方法，将模型存储到ckpt文件中。一般会在训练N个周期后(如每100次更新)存储一次。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ppo.saver.save(ppo.sess, model_dir + <span class="string">"/"</span> + str(EP_NO) + <span class="string">".ckpt"</span>)</span><br></pre></td></tr></table></figure>
 <h2 id="2-模型恢复"><a href="#2-模型恢复" class="headerlink" title="2. 模型恢复"></a>2. 模型恢复</h2><p>模型恢复时（如Test或者继续训练现有模型时）调用saver的restore方法,path是ckpt文件的路径。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ppo.saver.restore(ppo.sess, path)</span><br></pre></td></tr></table></figure>
-<h2 id="3-TensorBoard训练过程可视化"><a href="#3-TensorBoard训练过程可视化" class="headerlink" title="3. TensorBoard训练过程可视化"></a>3. TensorBoard训练过程可视化</h2><p>一般也是在网络的构造函数中定义好需要可视化的量。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.summary.scalar(<span class="string">"reward"</span>, self.reward)</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-TensorBoard训练过程可视化"><a href="#3-TensorBoard训练过程可视化" class="headerlink" title="3. TensorBoard训练过程可视化"></a>3. TensorBoard训练过程可视化</h2><p>一般也是在网络的构造函数中定义好需要可视化的量。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.summary.scalar(<span class="string">"reward"</span>, self.reward)</span><br></pre></td></tr></table></figure></p>
 <p>并定义一个merge之前所有summary的op<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.merged_summary_op = tf.summary.merge_all()</span><br></pre></td></tr></table></figure></p>
 <p>在需要可视化时run这个op，一般存储模型的同时也将该模型的一些指标如reward、loss等可视化到TensorBoard上，方便测试时选择效果较好的模型。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_, summary = ppo.sess.run([ppo.reward, ppo.merged_summary_op], feed_dict=&#123;</span><br><span class="line">           ppo.rewards: GLOBAL_REWARDS,</span><br><span class="line">       &#125;)</span><br></pre></td></tr></table></figure></p>
-<p>之所以要传一个feed_dict是因为reward不是网络在运算过程中产生的，而是环境返回的，因此定义了一个placeholder，通过这样的方式将reward传回去，再传给TensorBoard可视化。</p>
+<p>之所以要传一个feed_dict是因为reward不是网络在运算过程中产生的，而是环境返回的，因此定义了一个placeholder，通过这样的方式将reward传回去，再传给TensorBoard可视化。</p>
 
       
 
@@ -185,6 +185,10 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">BUG</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tensorflow</a>
         		</li>
       		 
@@ -194,10 +198,6 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">强化学习</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">BUG</a>
         		</li>
       		
 		</ul>
@@ -352,6 +352,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">matplotlib</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">BUG</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
@@ -365,18 +377,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">BUG</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">matplotlib</a>
               </li>
             
             <div class="clearfix"></div>
