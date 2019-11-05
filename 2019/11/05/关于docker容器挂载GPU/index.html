@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: 网络 | xinyuan的blog</title>
+  <title>关于docker容器挂载GPU | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xinyuan的blog">
-<meta property="og:url" content="http://yoursite.com/tags/网络/index.html">
+  <meta name="description" content="总结了一下docker容器中挂载GPU的几种方法，nvidia-docker1.0因为年代久远没有测试。">
+<meta name="keywords" content="Docker,GPU,虚拟化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于docker容器挂载GPU">
+<meta property="og:url" content="http://yoursite.com/2019/11/05/关于docker容器挂载GPU/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
+<meta property="og:description" content="总结了一下docker容器中挂载GPU的几种方法，nvidia-docker1.0因为年代久远没有测试。">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-11-05T03:03:25.649Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xinyuan的blog">
+<meta name="twitter:title" content="关于docker容器挂载GPU">
+<meta name="twitter:description" content="总结了一下docker容器中挂载GPU的几种方法，nvidia-docker1.0因为年代久远没有测试。">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -132,68 +137,133 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-关于docker容器挂载GPU" class="article article-type-post " itemscope="" itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/Centos7虚拟机网络设置/" class="archive-article-date">
-  	<time datetime="2019-01-06T11:53:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/Centos7虚拟机网络设置/">Centos7虚拟机网络设置</a>
+    <h1 class="article-title" itemprop="name">
+      关于docker容器挂载GPU
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/11/05/关于docker容器挂载GPU/" class="archive-article-date">
+  	<time datetime="2019-11-05T06:04:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-05</time>
+</a>
+        
+      </header>
+    
+    <!-- 目录内容 -->
+
+<!-- 目录内容结束 -->
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>总结了一下docker容器中挂载GPU的几种方法，nvidia-docker1.0因为年代久远没有测试。</p>
+<a id="more"></a>
+<h2 id="1-nvidia-docker-1-0-未测试"><a href="#1-nvidia-docker-1-0-未测试" class="headerlink" title="1. nvidia-docker 1.0(未测试)"></a>1. nvidia-docker 1.0(未测试)</h2><h2 id="2-nvidia-docker-2-0-成功"><a href="#2-nvidia-docker-2-0-成功" class="headerlink" title="2. nvidia-docker 2.0(成功)"></a>2. nvidia-docker 2.0(成功)</h2><p>安装 <a href="https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(version-2.0)" target="_blank" rel="noopener">https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(version-2.0)</a></p>
+<p>测试 <a href="https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#usage" target="_blank" rel="noopener">https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#usage</a></p>
+<p>首先要在/etc/docker/daemon.json中配置好nvidia runtime，安装nvidia-docker可能已经默认配置好了</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="attr">"runtimes"</span>: &#123;</span><br><span class="line">        <span class="attr">"nvidia"</span>: &#123;</span><br><span class="line">            <span class="attr">"path"</span>: <span class="string">"/usr/bin/nvidia-container-runtime"</span>,</span><br><span class="line">            <span class="attr">"runtimeArgs"</span>: []</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以在daemon.json中添加一项</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"default-runtime": "nvidia"</span><br></pre></td></tr></table></figure>
+<p>这样就可以将nvidia container runtime设置为默认runc，在启动容器时就可以不添加runtime参数</p>
+<p>启动容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all -it ubuntu:16.04 bash</span><br></pre></td></tr></table></figure>
+<p>执行nvidia-smi可以查看显卡信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| NVIDIA-SMI 410.48                 Driver Version: 410.48                    |</span><br><span class="line">|-------------------------------+----------------------+----------------------+</span><br><span class="line">| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |</span><br><span class="line">| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |</span><br><span class="line">|===============================+======================+======================|</span><br><span class="line">|   0  Tesla K80           Off  | 00000000:07:00.0 Off |                  Off |</span><br><span class="line">| N/A   31C    P8    26W / 149W |     11MiB / 12206MiB |      0%      Default |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">|   1  Tesla K80           Off  | 00000000:08:00.0 Off |                  Off |</span><br><span class="line">| N/A   26C    P8    27W / 149W |     11MiB / 12206MiB |      0%      Default |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">                                                                               </span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| Processes:                                                       GPU Memory |</span><br><span class="line">|  GPU       PID   Type   Process name                             Usage      |</span><br><span class="line">|=============================================================================|</span><br><span class="line">|  No running processes found                                                 |</span><br><span class="line">+-----------------------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+<h2 id="3-docker-19-03-原生支持-成功"><a href="#3-docker-19-03-原生支持-成功" class="headerlink" title="3. docker 19.03 原生支持(成功)"></a>3. docker 19.03 原生支持(成功)</h2><p>docker从19.03版本开始原生支持gpu挂载</p>
+<p>安装 <a href="https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)" target="_blank" rel="noopener">https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)</a></p>
+<p>创建容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --gpus all -it ubuntu:16.04 bash</span><br></pre></td></tr></table></figure>
+<p>容器中查看GPU信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
+<h2 id="4-不使用nvidia-docker直接挂载设备文件、驱动文件-成功"><a href="#4-不使用nvidia-docker直接挂载设备文件、驱动文件-成功" class="headerlink" title="4. 不使用nvidia-docker直接挂载设备文件、驱动文件(成功)"></a>4. 不使用nvidia-docker直接挂载设备文件、驱动文件(成功)</h2><p><strong><em>重要：首先需要将default runtime修改为docker default runc</em></strong></p>
+<p><strong><em>清空/etc/docker/daemon.json中default-runtime的配置信息即可</em></strong></p>
+<p>创建容器的命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --device /dev/nvidia0:/dev/nvidia0  --device /dev/nvidiactl:/dev/nvidiactl --device /dev/nvidia-uvm:/dev/nvidia-uvm --device /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools --device /dev/nvidia-modeset:/dev/nvidia-modeset -v /usr/bin/:/usr/bin -v /etc/alternatives:/etc/alternatives -v /usr/lib:/usr/lib -it ubuntu:16.04 bash</span><br></pre></td></tr></table></figure>
+<p>容器查看GPU信息，需要预加载 libnvidia-ml.so</p>
+<p><strong><em>注意：libnvidia-ml.so的目录名称与驱动的型号有关</em></strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LD_PRELOAD=/usr/lib/nvidia-410/libnvidia-ml.so nvidia-smi</span><br></pre></td></tr></table></figure>
+<p>LD_PRELOAD是一个优先级最高的动态库加载路径，设置为环境变量后可以直接执行nvidia-smi</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export LD_PRELOAD=/usr/lib/nvidia-410/libnvidia-ml.so</span><br><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">虚拟机</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Docker</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GPU</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kubernetes</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">虚拟化</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/09/03/记一个愚蠢的BUG/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">记一个愚蠢的BUG</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -216,9 +286,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
