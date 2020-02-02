@@ -6,21 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>关于docker | xinyuan的blog</title>
+  <title>关于Docker | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="“容器”并不存在，或者说“容器虚拟化技术”并没有创造出来什么新的东西，它只是Linux内核中一些特性的集合，是的我们能够将进程隔离起来，实现“容器”的效果。">
 <meta name="keywords" content="Docker,虚拟化">
 <meta property="og:type" content="article">
-<meta property="og:title" content="关于docker">
+<meta property="og:title" content="关于Docker">
 <meta property="og:url" content="http://yoursite.com/2020/02/01/关于Docker/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
 <meta property="og:description" content="“容器”并不存在，或者说“容器虚拟化技术”并没有创造出来什么新的东西，它只是Linux内核中一些特性的集合，是的我们能够将进程隔离起来，实现“容器”的效果。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/虚拟机与容器.jpeg">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/cgroups.png">
-<meta property="og:updated_time" content="2020-02-02T16:45:28.000Z">
+<meta property="og:updated_time" content="2020-02-02T16:54:00.834Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="关于docker">
+<meta name="twitter:title" content="关于Docker">
 <meta name="twitter:description" content="“容器”并不存在，或者说“容器虚拟化技术”并没有创造出来什么新的东西，它只是Linux内核中一些特性的集合，是的我们能够将进程隔离起来，实现“容器”的效果。">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/虚拟机与容器.jpeg">
   
@@ -147,7 +147,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      关于docker
+      关于Docker
     </h1>
   
 
@@ -189,7 +189,7 @@
 <li><p><strong>容器技术</strong>直接基于宿主机的操作系统（即Linux），容器引擎（Container Engine）调用Linux内核，创建出被隔离的进程，这些进程实际上还是运行在宿主机的操作系统上，这些进程就是所谓的“容器”。有两方面与虚拟机的差异之处。一方面，由于CGroups和Namespaces是Linux内核的特性，因此Docker也必须是运行在Linux上的。另一方面，上面提到，虚拟化出的容器其实也是经过隔离的进程，仍然是运行在宿主机的操作系统上的，因此创建出的“虚拟操作系统”也必然是Linux，并且容器中运行的所有进程在宿主机操作系统中通过<code>ps</code>、<code>htop</code>等命令都看得到。</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">现在Docker也发布了Windows和MacOS版本，在Windows和MacOS上，Docker实际上是先创建了一个LInux虚拟机，然后再在这个Linux虚拟机上创建出的的容器。</span><br><span class="line"></span><br><span class="line">就是说Docker必须是运行在Linux上的。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">现在Docker也发布了Windows和MacOS版本，在Windows和MacOS上，Docker实际上是先创建了一个Linux虚拟机，然后再在这个Linux虚拟机上创建出的的容器。</span><br><span class="line"></span><br><span class="line">就是说Docker必须是运行在Linux上的。</span><br></pre></td></tr></table></figure>
 <h3 id="2-CGroups（Control-Groups）"><a href="#2-CGroups（Control-Groups）" class="headerlink" title="2. CGroups（Control Groups）"></a>2. CGroups（Control Groups）</h3><h4 id="2-1-CGroups是什么？"><a href="#2-1-CGroups是什么？" class="headerlink" title="2.1 CGroups是什么？"></a>2.1 CGroups是什么？</h4><p>CGroups可以计量（metering）和限制（limiting）一组进程的计算资源（包括CPU、内存、IO、设备等）。</p>
 <p>根据管理计算资源的不同，CGroups被划分为多个子系统（subsystem）,如CPU CGroup、Memory CGroup、Device CGroup等，每个子系统都有一个独立的树形结构，如图：</p>
 <p><img src="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/cgroups.png" width="500"></p>
@@ -450,18 +450,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GPU</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">虚拟化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -471,6 +459,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">BUG</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GPU</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">虚拟化</a>
               </li>
              
               <li class="article-tag-list-item">
