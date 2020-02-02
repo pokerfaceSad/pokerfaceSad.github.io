@@ -18,7 +18,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/虚拟机与容器.jpeg">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/cgroups.png">
-<meta property="og:updated_time" content="2020-02-02T16:59:53.690Z">
+<meta property="og:updated_time" content="2020-02-02T17:02:56.138Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Docker">
 <meta name="twitter:description" content="“容器”并不存在，或者说“容器虚拟化技术”并没有创造出来什么新的东西，它只是Linux内核中一些特性的集合，使得我们能够将进程隔离起来，实现“容器”的效果。">
@@ -160,6 +160,30 @@
     
     <!-- 目录内容 -->
 
+    <p class="show-toc-btn" id="show-toc-btn" onclick="showToc();" style="display:none">
+          <span class="btn-bg"></span>
+          <span class="btn-text">文章导航</span>
+          </p>
+    <div id="toc-article" class="toc-article">
+        <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
+        <strong class="toc-title">文章目录</strong>
+           <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Docker是什么？"><span class="toc-number">1.</span> <span class="toc-text">1. Docker是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-CGroups（Control-Groups）"><span class="toc-number">2.</span> <span class="toc-text">2. CGroups（Control Groups）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-CGroups是什么？"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 CGroups是什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-几个常用的控制组"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 几个常用的控制组</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-1-Memory-CGroup"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 Memory CGroup</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-CPU-CGroup"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 CPU CGroup</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-3-CPUset-CGroup"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3 CPUset CGroup</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-4-Device-CGroup"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4 Device CGroup</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Namespaces"><span class="toc-number">3.</span> <span class="toc-text">3. Namespaces</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Namespaces是什么？"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 Namespaces是什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-六个命名空间"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 六个命名空间</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-1-PID-Namespace"><span class="toc-number">3.2.1.</span> <span class="toc-text">3.2.1 PID Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-2-Network-Namespace"><span class="toc-number">3.2.2.</span> <span class="toc-text">3.2.2 Network Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-3-Mount-Namespace"><span class="toc-number">3.2.3.</span> <span class="toc-text">3.2.3 Mount Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-4-UTS-Namespace"><span class="toc-number">3.2.4.</span> <span class="toc-text">3.2.4 UTS Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-5-IPC-Namespace"><span class="toc-number">3.2.5.</span> <span class="toc-text">3.2.5 IPC Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-6-User-Namespace"><span class="toc-number">3.2.6.</span> <span class="toc-text">3.2.6 User Namespace</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-总结"><span class="toc-number">4.</span> <span class="toc-text">4. 总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-参考"><span class="toc-number">5.</span> <span class="toc-text">5. 参考</span></a></li></ol>
+         </div>
+   <script type="text/javascript">
+    function showToc(){
+        var toc_article = document.getElementById("toc-article");
+        var show_toc_btn = document.getElementById("show-toc-btn");
+        toc_article.setAttribute("style","display:block");
+        show_toc_btn.setAttribute("style","display:none");
+        };
+    function showBtn(){
+        var toc_article = document.getElementById("toc-article");
+        var show_toc_btn = document.getElementById("show-toc-btn");
+        toc_article.setAttribute("style","display:none");
+        show_toc_btn.setAttribute("style","display:block");
+        };
+   </script>
+      
 <!-- 目录内容结束 -->
 
     <div class="article-entry" itemprop="articleBody">
@@ -316,7 +340,7 @@
   
   
     <a href="/2019/11/05/关于docker容器挂载GPU/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">关于docker容器挂载GPU</div>
+      <div class="article-nav-title">关于Docker容器挂载GPU</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -335,6 +359,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Docker是什么？"><span class="toc-number">1.</span> <span class="toc-text">1. Docker是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-CGroups（Control-Groups）"><span class="toc-number">2.</span> <span class="toc-text">2. CGroups（Control Groups）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-CGroups是什么？"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 CGroups是什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-几个常用的控制组"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 几个常用的控制组</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-1-Memory-CGroup"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 Memory CGroup</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-CPU-CGroup"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 CPU CGroup</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-3-CPUset-CGroup"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3 CPUset CGroup</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-4-Device-CGroup"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4 Device CGroup</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Namespaces"><span class="toc-number">3.</span> <span class="toc-text">3. Namespaces</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Namespaces是什么？"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 Namespaces是什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-六个命名空间"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 六个命名空间</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-1-PID-Namespace"><span class="toc-number">3.2.1.</span> <span class="toc-text">3.2.1 PID Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-2-Network-Namespace"><span class="toc-number">3.2.2.</span> <span class="toc-text">3.2.2 Network Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-3-Mount-Namespace"><span class="toc-number">3.2.3.</span> <span class="toc-text">3.2.3 Mount Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-4-UTS-Namespace"><span class="toc-number">3.2.4.</span> <span class="toc-text">3.2.4 UTS Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-5-IPC-Namespace"><span class="toc-number">3.2.5.</span> <span class="toc-text">3.2.5 IPC Namespace</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-6-User-Namespace"><span class="toc-number">3.2.6.</span> <span class="toc-text">3.2.6 User Namespace</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-总结"><span class="toc-number">4.</span> <span class="toc-text">4. 总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-参考"><span class="toc-number">5.</span> <span class="toc-text">5. 参考</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
