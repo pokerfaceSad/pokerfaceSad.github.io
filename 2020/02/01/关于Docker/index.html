@@ -18,7 +18,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/虚拟机与容器.jpeg">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/cgroups.png">
-<meta property="og:updated_time" content="2020-02-02T17:02:56.138Z">
+<meta property="og:updated_time" content="2020-02-06T16:06:01.418Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Docker">
 <meta name="twitter:description" content="“容器”并不存在，或者说“容器虚拟化技术”并没有创造出来什么新的东西，它只是Linux内核中一些特性的集合，使得我们能够将进程隔离起来，实现“容器”的效果。">
@@ -285,7 +285,7 @@
 </table>
 <p>主机上的普通用户UID 10000和UID 12000被映射为了container0和container1中的UID 0即root，就是说在容器的User Namespace中宿主机的UID 10000和UID12000成为了UID 0但实际上在宿主机中，这两个用户还是普通用户，这使得这两个用户在容器中有了足够的操作权限，而在主机中又不会获得过多的权限，提高了安全性。</p>
 <h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h3><ul>
-<li>正如很多文章中都提到的，“容器”并不存在，或者说“容器虚拟化技术”并没有创造出来什么新的东西，它只是Linux内核中一些特性的集合，是的我们能够将进程隔离起来，实现“容器”的效果。</li>
+<li>正如很多文章中都提到的，“容器”并不存在，或者说“容器虚拟化技术”并没有创造出来什么新的东西，它只是Linux内核中一些特性的集合，使得我们能够将进程隔离起来，实现“容器”的效果。</li>
 <li>容器所基于的CGroups和Namespaces技术，并不是只在容器中使用，Linux系统中的普通进程也无时无刻不在CGroups和Namespaces之中，所以<strong>“即使你在容器外，你还是在容器中”</strong>。</li>
 </ul>
 <blockquote>
@@ -503,14 +503,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GPU</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">虚拟化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">tensorflow</a>
               </li>
              
@@ -520,6 +512,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GPU</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">虚拟化</a>
               </li>
             
             <div class="clearfix"></div>
