@@ -6,20 +6,28 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>关于Docker容器挂载GPU | xinyuan的blog</title>
+  <title>论文笔记《GaiaGPU：Sharing GPUs in Container Clouds》 | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="总结了一下docker容器中挂载GPU的几种方法，nvidia-docker1.0因为年代久远没有测试。">
-<meta name="keywords" content="Docker,GPU,虚拟化">
+  <meta name="description" content="2018年腾讯和北大发的一篇论文，一种容器云平台上的GPU虚拟化解决方案。对于GPU虚拟化关键的vCUDA部分讲得比较含糊，但是系统架构方面还是有很多值得学习的地方。">
+<meta name="keywords" content="Docker,虚拟化,论文笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="关于Docker容器挂载GPU">
-<meta property="og:url" content="http://yoursite.com/2019/11/05/关于docker容器挂载GPU/index.html">
+<meta property="og:title" content="论文笔记《GaiaGPU：Sharing GPUs in Container Clouds》">
+<meta property="og:url" content="http://yoursite.com/2020/02/07/论文笔记《GaiaGPU Sharing GPUs in Container Clouds》/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
-<meta property="og:description" content="总结了一下docker容器中挂载GPU的几种方法，nvidia-docker1.0因为年代久远没有测试。">
+<meta property="og:description" content="2018年腾讯和北大发的一篇论文，一种容器云平台上的GPU虚拟化解决方案。对于GPU虚拟化关键的vCUDA部分讲得比较含糊，但是系统架构方面还是有很多值得学习的地方。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-02-02T17:02:38.350Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/GaiaGPU_Paper.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/arch-GaiaGPU.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/GPUManager.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/InterceptAPI.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/arch-GaiaGPU.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/ElasticAlloc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/EgElasticAlloc.png">
+<meta property="og:updated_time" content="2020-02-07T11:13:15.704Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="关于Docker容器挂载GPU">
-<meta name="twitter:description" content="总结了一下docker容器中挂载GPU的几种方法，nvidia-docker1.0因为年代久远没有测试。">
+<meta name="twitter:title" content="论文笔记《GaiaGPU：Sharing GPUs in Container Clouds》">
+<meta name="twitter:description" content="2018年腾讯和北大发的一篇论文，一种容器云平台上的GPU虚拟化解决方案。对于GPU虚拟化关键的vCUDA部分讲得比较含糊，但是系统架构方面还是有很多值得学习的地方。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/GaiaGPU_Paper.png">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -137,58 +145,156 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-关于docker容器挂载GPU" class="article article-type-post " itemscope="" itemprop="blogPost">
+            <article id="post-论文笔记《GaiaGPU Sharing GPUs in Container Clouds》" class="article article-type-post " itemscope="" itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      关于Docker容器挂载GPU
+      论文笔记《GaiaGPU：Sharing GPUs in Container Clouds》
     </h1>
   
 
         
-        <a href="/2019/11/05/关于docker容器挂载GPU/" class="archive-article-date">
-  	<time datetime="2019-11-05T06:04:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-05</time>
+        <a href="/2020/02/07/论文笔记《GaiaGPU Sharing GPUs in Container Clouds》/" class="archive-article-date">
+  	<time datetime="2020-02-07T11:09:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-07</time>
 </a>
         
       </header>
     
     <!-- 目录内容 -->
 
+    <p class="show-toc-btn" id="show-toc-btn" onclick="showToc();" style="display:none">
+          <span class="btn-bg"></span>
+          <span class="btn-text">文章导航</span>
+          </p>
+    <div id="toc-article" class="toc-article">
+        <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
+        <strong class="toc-title">文章目录</strong>
+           <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#论文内容"><span class="toc-number">1.</span> <span class="toc-text">论文内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#摘要"><span class="toc-number">1.1.</span> <span class="toc-text">摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">1. Introduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Related-Work"><span class="toc-number">1.3.</span> <span class="toc-text">2. Related Work</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Design-And-Implementation"><span class="toc-number">1.4.</span> <span class="toc-text">3. Design And Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#A-系统设计"><span class="toc-number">1.4.1.</span> <span class="toc-text">A.  系统设计</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#a-GPU-Manager"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">a) GPU Manager</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b-GPU-Scheduler"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">b) GPU Scheduler</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#c-vGPU-Manager"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">c) vGPU Manager</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#d-vGPU-Library"><span class="toc-number">1.4.1.4.</span> <span class="toc-text">d) vGPU Library</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#系统工作流程"><span class="toc-number">1.4.1.5.</span> <span class="toc-text">系统工作流程</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#B-优化策略"><span class="toc-number">1.4.2.</span> <span class="toc-text">B. 优化策略</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#弹性资源分配（Elastic-Resource-Allocation）"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">弹性资源分配（Elastic Resource Allocation）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#动态资源分配（Dynamic-Resource-Allocation）"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">动态资源分配（Dynamic Resource Allocation）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Experiment"><span class="toc-number">1.5.</span> <span class="toc-text">4. Experiment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Conclusion"><span class="toc-number">1.6.</span> <span class="toc-text">5.Conclusion</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">2.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-number">3.</span> <span class="toc-text">参考资料</span></a></li></ol>
+         </div>
+   <script type="text/javascript">
+    function showToc(){
+        var toc_article = document.getElementById("toc-article");
+        var show_toc_btn = document.getElementById("show-toc-btn");
+        toc_article.setAttribute("style","display:block");
+        show_toc_btn.setAttribute("style","display:none");
+        };
+    function showBtn(){
+        var toc_article = document.getElementById("toc-article");
+        var show_toc_btn = document.getElementById("show-toc-btn");
+        toc_article.setAttribute("style","display:none");
+        show_toc_btn.setAttribute("style","display:block");
+        };
+   </script>
+      
 <!-- 目录内容结束 -->
 
     <div class="article-entry" itemprop="articleBody">
       
-        <p>总结了一下docker容器中挂载GPU的几种方法，nvidia-docker1.0因为年代久远没有测试。</p>
+        <p>2018年腾讯和北大发的一篇论文，一种容器云平台上的GPU虚拟化解决方案。对于GPU虚拟化关键的vCUDA部分讲得比较含糊，但是系统架构方面还是有很多值得学习的地方。</p>
+<p><img src="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/GaiaGPU_Paper.png" width="800"></p>
 <a id="more"></a>
-<h2 id="1-nvidia-docker-1-0-未测试"><a href="#1-nvidia-docker-1-0-未测试" class="headerlink" title="1. nvidia-docker 1.0(未测试)"></a>1. nvidia-docker 1.0(未测试)</h2><h2 id="2-nvidia-docker-2-0-成功"><a href="#2-nvidia-docker-2-0-成功" class="headerlink" title="2. nvidia-docker 2.0(成功)"></a>2. nvidia-docker 2.0(成功)</h2><p>安装 <a href="https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(version-2.0)" target="_blank" rel="noopener">https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(version-2.0)</a></p>
-<p>测试 <a href="https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#usage" target="_blank" rel="noopener">https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#usage</a></p>
-<p>首先要在/etc/docker/daemon.json中配置好nvidia runtime，安装nvidia-docker可能已经默认配置好了</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="attr">"runtimes"</span>: &#123;</span><br><span class="line">        <span class="attr">"nvidia"</span>: &#123;</span><br><span class="line">            <span class="attr">"path"</span>: <span class="string">"/usr/bin/nvidia-container-runtime"</span>,</span><br><span class="line">            <span class="attr">"runtimeArgs"</span>: []</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以在daemon.json中添加一项</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"default-runtime": "nvidia"</span><br></pre></td></tr></table></figure>
-<p>这样就可以将nvidia container runtime设置为默认runc，在启动容器时就可以不添加runtime参数</p>
-<p>启动容器</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all -it ubuntu:16.04 bash</span><br></pre></td></tr></table></figure>
-<p>执行nvidia-smi可以查看显卡信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| NVIDIA-SMI 410.48                 Driver Version: 410.48                    |</span><br><span class="line">|-------------------------------+----------------------+----------------------+</span><br><span class="line">| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |</span><br><span class="line">| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |</span><br><span class="line">|===============================+======================+======================|</span><br><span class="line">|   0  Tesla K80           Off  | 00000000:07:00.0 Off |                  Off |</span><br><span class="line">| N/A   31C    P8    26W / 149W |     11MiB / 12206MiB |      0%      Default |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">|   1  Tesla K80           Off  | 00000000:08:00.0 Off |                  Off |</span><br><span class="line">| N/A   26C    P8    27W / 149W |     11MiB / 12206MiB |      0%      Default |</span><br><span class="line">+-------------------------------+----------------------+----------------------+</span><br><span class="line">                                                                               </span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| Processes:                                                       GPU Memory |</span><br><span class="line">|  GPU       PID   Type   Process name                             Usage      |</span><br><span class="line">|=============================================================================|</span><br><span class="line">|  No running processes found                                                 |</span><br><span class="line">+-----------------------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
-<h2 id="3-docker-19-03-原生支持-成功"><a href="#3-docker-19-03-原生支持-成功" class="headerlink" title="3. docker 19.03 原生支持(成功)"></a>3. docker 19.03 原生支持(成功)</h2><p>docker从19.03版本开始原生支持gpu挂载</p>
-<p>安装 <a href="https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)" target="_blank" rel="noopener">https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)</a></p>
-<p>创建容器</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --gpus all -it ubuntu:16.04 bash</span><br></pre></td></tr></table></figure>
-<p>容器中查看GPU信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
-<h2 id="4-不使用nvidia-docker直接挂载设备文件、驱动文件-成功"><a href="#4-不使用nvidia-docker直接挂载设备文件、驱动文件-成功" class="headerlink" title="4. 不使用nvidia-docker直接挂载设备文件、驱动文件(成功)"></a>4. 不使用nvidia-docker直接挂载设备文件、驱动文件(成功)</h2><p><strong><em>重要：首先需要将default runtime修改为docker default runc</em></strong></p>
-<p><strong><em>清空/etc/docker/daemon.json中default-runtime的配置信息即可</em></strong></p>
-<p>创建容器的命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --device /dev/nvidia0:/dev/nvidia0  --device /dev/nvidiactl:/dev/nvidiactl --device /dev/nvidia-uvm:/dev/nvidia-uvm --device /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools --device /dev/nvidia-modeset:/dev/nvidia-modeset -v /usr/bin/:/usr/bin -v /etc/alternatives:/etc/alternatives -v /usr/lib:/usr/lib -it ubuntu:16.04 bash</span><br></pre></td></tr></table></figure>
-<p>容器查看GPU信息，需要预加载 libnvidia-ml.so</p>
-<p><strong><em>注意：libnvidia-ml.so的目录名称与驱动的型号有关</em></strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LD_PRELOAD=/usr/lib/nvidia-410/libnvidia-ml.so nvidia-smi</span><br></pre></td></tr></table></figure>
-<p>LD_PRELOAD是一个优先级最高的动态库加载路径，设置为环境变量后可以直接执行nvidia-smi</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export LD_PRELOAD=/usr/lib/nvidia-410/libnvidia-ml.so</span><br><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
+<h2 id="论文内容"><a href="#论文内容" class="headerlink" title="论文内容"></a>论文内容</h2><h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>容器技术由于其轻量级和可伸缩的优势而被广泛使用。GPU也因为其强大的并行计算能力被用于应用程序加速。在云计算环境下，容器可能需要一块或者多块GPU计算卡来满足应程序的资源需求，但另一方面，容器独占GPU计算卡常常会带来资源利用率低的问题。因此，对于云计算资源提供商而言，如何解决在多个容器之间共享GPU计算卡是一个很有吸引力的问题。本文中我们提出了一种称为<strong>GaiaGPU</strong>的方法，用于在容器间共享GPU存储和GPU的计算资源。<strong>GaiaGPU</strong>会将物理GPU计算卡分割为多个虚拟GPU并且将虚拟GPU按需分配给容器。同时我们采用了<strong>弹性资源分配</strong>和<strong>动态资源分配</strong>的方法来提高资源利用率。实验结果表明<strong>GaiaGPU</strong>平均仅带来1.015%的性能损耗并且能够高效的为容器分配和隔离GPU资源。</p>
+<p>关键词：GPU虚拟化，Kubernetes，Container</p>
+<h3 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h3><p>先是在介绍容器的概念，与虚拟机的区别，和GPU的特点。</p>
+<p>讲到GPU虚拟化技术，GPU虚拟化技术就是在诸如VM或者容器这样被隔离的虚拟环境之间共享GPU的技术。当前现存的GPU虚拟化技术都被应用于VM，基于容器的GPU虚拟化技术还处于起步阶段。当前现存的基于容器的GPU虚拟化技术有以下的短板：</p>
+<ul>
+<li>不能共享，只能单个容器独占一块GPU计算卡（Nvidia Docker）</li>
+<li>只能在多个容器之间共享GPU内存（2017 IEEE《ConVGPU: GPU Management Middleware in Container Based Virtualized Environment》）</li>
+<li>仅支持单个GPU（2017 IEEE 《ConVGPU：……》）</li>
+</ul>
+<p>接下来讲到GaiaGPU，能够透明地（transparently）在多个容器之间共享GPU的内存和计算资源。用户无需因为要共享GPU个修改容器镜像，为了实现这一目标本文基于了Kubernetes的Device Plugin框架讲物理GPU分割为多个vGPU。每一个容器都可以按需被分配一个或者多个vGPU。还提供了两种方法用于在运行时修改容器的资源，一种是<strong>弹性资源分配（Elastic Resource Allocation）</strong>，能够临时的改变容器资源，另一种是<strong>动态资源分配（Dynamic Resource Allocation）</strong>，能够永久的改变容器资源。</p>
+<p>接下来解释了共享GPU内存（Memory）和共享GPU计算资源（Computer Resource）的含义。共享GPU内存就是说一块GPU计算卡的内存被划分为多块，每个容器都占有一部分。共享GPU计算资源就是说每一个容器都占有GPU的线程资源（GPU’s thread）的一部分来进行并行计算。一个vGPU（抽象概念，实际上并不存在）由GPU的内存和计算资源构成。vGPU的内存就是被实际分配的物理显存，vGPU的计算资源通过GPU的使用率来计量，GPU使用率被定义为在过去一个采样周期内某个容器使用GPU进行计算的时间百分比。</p>
+<p>本文的贡献：</p>
+<ul>
+<li>提出<strong>GaiaGPU</strong>，一种在容器之间透明的共享GPU内存和计算资源的方法</li>
+<li>提出<strong>弹性资源分配</strong>和<strong>动态资源分配</strong>用于提高资源利用率</li>
+<li>进行了4组实验来评估GaiaGPU的表现，表明性能损耗低，仅1.015%</li>
+</ul>
+<h3 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2. Related Work"></a>2. Related Work</h3><p>……</p>
+<h3 id="3-Design-And-Implementation"><a href="#3-Design-And-Implementation" class="headerlink" title="3. Design And Implementation"></a>3. Design And Implementation</h3><p>这一部分介绍了整个虚拟化框架的架构，和两种利用率优化策略（弹性资源分配和动态资源分配）。</p>
+<h4 id="A-系统设计"><a href="#A-系统设计" class="headerlink" title="A.  系统设计"></a>A.  系统设计</h4><p>如下图是GaiaGPU的系统架构：</p>
+<p><img src="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/arch-GaiaGPU.png" width="500"></p>
+<p>有四个主要模块：<strong>GPU Manager，GPU Scheduler，vGPU Manager，vGPU Library</strong></p>
+<p>总的来看可以两层，在主机层（host level）GPU Manager负责创建vGPU，GPU Scheduler负责将物理GPU计算卡的资源分配给vGPU，在容器层（container level）vGPU Library模块会负责管理某一个具体容器的GPU资源。</p>
+<h5 id="a-GPU-Manager"><a href="#a-GPU-Manager" class="headerlink" title="a) GPU Manager"></a>a) GPU Manager</h5><p>GPU Manger是Device Plugin接口的实现，运行在宿主机上负责创建vGPU和通过gRPC通信向Kubelet报告GPU的情况。下图是GPU Manager与Kubelet的通信方式：</p>
+<p><img src="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/GPUManager.png" width="500"></p>
+<p>首先GPU Manager向Kubelet发起<strong>Register</strong>请求，在Kubelet中注册自己，注册成功后Kubelet会向GPU Manager发起一个<strong>ListAndWatch</strong>请求，GPU Manager需要向Kubelet返回一个自己所管理的设备的列表，但是这里不是直接将物理GPU计算卡的信息返回给Kubelet，而是vGPU的信息，<strong>物理的GPU计算卡被虚拟化为两个资源维度：内存和计算资源</strong>，就是说原来的GPU计算卡被虚拟化成了两种设备：</p>
+<ul>
+<li>存储维度：将256M的内存为一个单元叫做<strong><em>vmemory</em></strong></li>
+<li>计算维度：将一个物理GPU分为100个<strong><em>vprocessor</em></strong>，每个<em>vprocessor</em>拥有1%的GPU使用率</li>
+</ul>
+<p>GPU Manger将一个由所有<em>vmemory</em>和<em>vprocessor</em>的信息组成的list返回给Kubelet。</p>
+<p>当用户为某个容器申请GPU资源时，Kubelet会直接（arbitrarily 不知道是不是要表达“直接”的意思）从GPU Manager返回的list中选择相应数量的虚拟设备，然后向GPU Manager发起<strong>Allocate</strong>请求，请求将这些虚拟设备分配给该容器使用。但是由于list中的信息实际上都是虚拟的设备，所以<strong>还需要建立起一个虚拟设备到物理设备的映射，就是说需要决定究竟从哪一个物理设备上分割实际的资源</strong>。</p>
+<p>映射流程举例：一个容器申请了50个<em>vprocess</em>和10个<em>vmemory</em>，首先Kubelet会随机的从上文提到的list中选择对应数量的Device ID发送给GPU Manager，然后GPU Manager会根据接收到的Device ID计算所需的物理GPU资源，然后给GPU Scheduler发送一个请求，最终GPU Schduler返回具体分配给容器的物理GPU计算卡信息。</p>
+<p>在完成了上述的映射过程后GPU Manager会向Kubelet返回一个含有设备配置信息的<em>allocateResponse</em>，包含以下内容：1）容器的环境变量，2）需要挂载到容器中的目录（如NVIDIA驱动，CUDA库），3）被分配的物理设备信息。Kubelet会将这些信息返回给容器运行时（container runtime）用于创建容器。</p>
+<h5 id="b-GPU-Scheduler"><a href="#b-GPU-Scheduler" class="headerlink" title="b) GPU Scheduler"></a>b) GPU Scheduler</h5><p>GPU Scheduler负责处理来自GPU Manager的调度请求，如果调度成功GPU Scheduler会返回被分配的物理GPU计算卡信息。</p>
+<p>GPU Scheduler的调度基于拓扑学（topology），GPU拓扑是一个树形拓扑，书的根节点是一个物理机，叶子节点是物理GPU计算卡，调度策略如下：</p>
+<ul>
+<li>如果请求的资源<strong>少于一整块GPU计算卡（&lt;1）</strong>，则按照“最小化树上的资源碎片”的原则进行分配</li>
+<li>如果请求的资源<strong>等于一整块GPU计算卡（=1）</strong>，则按照”使得单叶子节点（即没有兄弟节点的叶子节点）数量最少”的原则进行分配</li>
+<li>如果请求的资源<strong>大于一整块GPU计算卡（&gt;1）</strong>，则按照“最小化GPU间通信成本”的原则进行分配，两个GPU间的通讯成本取决于两个GPU之间的连接模式<em>（这里好像并没有说清楚这个通信成本到底怎么衡量）</em></li>
+</ul>
+<h5 id="c-vGPU-Manager"><a href="#c-vGPU-Manager" class="headerlink" title="c) vGPU Manager"></a>c) vGPU Manager</h5><p>vGPU Manager运行在宿主机上，负责分发容器的配置信息和监控被分配了vGPU资源的容器。当一个容器申请GPU资源时，GPU Manager会发送容器的配置信息给vGPU Manager，配置信息包括请求的GPU资源和该容器的<em>name</em>等。根据收到的这些容器的配置信息，vGPUManager会为这个容器在宿主机上创建一个独立的目录，这个目录以容器的<em>name</em>命名，这个目录的路径也会包含在GPU Manager返回给Kubelet的<em>allocateResponse</em>中。容器的配置信息会被保存在这个目录中，并且通过Kubelet分发给容器。<em>（将这个目录挂载到容器中？）</em></p>
+<p>vGPU Manager和vGPU Library以“服务器-客户端”模式进行通信。vGPU Manager会维护一个被分配了GPU资源且存活的容器的list，并且周期性的检查这些容器是否仍然存活，如果容器退出，vGPU Manager会从list中移除这个容器的信息，并且删除对应的目录。</p>
+<h5 id="d-vGPU-Library"><a href="#d-vGPU-Library" class="headerlink" title="d) vGPU Library"></a>d) vGPU Library</h5><p>vGPU Library运行在容器中，用于管理其所在容器的GPU资源，vGPU Library会在容器中第一次执行GPU程序时被加载（launched），启动后vGPU Library会想vGPU Manager注册自身。</p>
+<p><strong>vGPU Library利用LD_LIBRARY_PATH机制拦截CUDA库中与内存和计算相关的API</strong>。<em>LD_LIBRARY_PATH</em>是Linux系统中的一个环境变量，能够影响程序的运行时链接（runtime link，这里不知道该怎么翻译合适），LD_LIBRARY_PATH中包含的目录会在加载标准库目录之前加载。下表展示了所有被拦截的CUDA API：</p>
+<p><img src="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/InterceptAPI.png" width="800"></p>
+<p><strong>两种资源限制策略</strong></p>
+<ul>
+<li><strong>硬限制（hard limiit）</strong>：如果容器资源消耗量超过配额，就不再给该容器分配资源</li>
+<li><strong>弹性限制（elastic limit）</strong>：如果容器资源消耗量超过配额，但是系统中还有空闲资源，那么该容器仍然能够得到更多的资源</li>
+</ul>
+<p><strong>内存资源的限制采用硬限制策略</strong>，因为 1）被分配的内存资源大小能够决定一个程序能否运行，但是对程序运行的效率影响较小，2）GPU是运算设备，采用一次性资源分配策略（one-time resource allocation strategy）,就是说一个程序只有在获得了所有的资源之后才开始运行，并且只有在程序运行完成后才回释放内存资源，如果采用弹性限制策略限制应用程序的内存使用，可能会导致对内存需求量大的应用程序无法运行，3）回收一个程序超额（over-allocated）资源的唯一方法就是通过抛出内存溢出异常（out-of-memory exception）杀死进程。</p>
+<p><strong>计算资源的限制采用弹性限制策略</strong>，因为计算资源对程序运行效率影响很大。并且与内存不同，计算资源（也就是GPU线程）会在执行之后立即释放，而不是等待整个程序的完成再释放。</p>
+<h5 id="系统工作流程"><a href="#系统工作流程" class="headerlink" title="系统工作流程"></a>系统工作流程</h5><p>总的来看，GaiaGPU的工作流程如下，对应系统架构图中的标号：</p>
+<p><img src="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/arch-GaiaGPU.png" width="400"></p>
+<ul>
+<li>Step 1：GPU Manager向Kubelet注册自身，并报告vGPU的信息（ListAndWatch）</li>
+<li>Step 2：Kubelet接收到来自Master的创建一个GPU容器的请求</li>
+<li>Step 3：Kubelet发送一个<em>allocateRequest</em>到GPU Manager</li>
+<li>Step 4：GPU Manager发送一个vGPU调度请求到GPU Scheduler，GPU Scheduler根据调度策略选择实际提供资源的物理GPU。如果调度成功返回一个包含该物理GPU的信息的reponse</li>
+<li>Step 5：GPU Manager将容器配置信息发送到vGPU Manager</li>
+<li>Step 6：GPU Manager将容器环境变量，挂载信息和设备信息通过<em>allocateResponse</em>返回给Kubelet</li>
+<li>Step 7：Kubelet根据allocateResponse*创建并且初始化一个容器</li>
+<li>Step 8：vGPU Library向vGPU Manager注册自身并且管理其所在容器的GPU资源</li>
+<li>Step 9：vGPU Manager持续监控GPU容器状态</li>
+</ul>
+<h4 id="B-优化策略"><a href="#B-优化策略" class="headerlink" title="B. 优化策略"></a>B. 优化策略</h4><h5 id="弹性资源分配（Elastic-Resource-Allocation）"><a href="#弹性资源分配（Elastic-Resource-Allocation）" class="headerlink" title="弹性资源分配（Elastic Resource Allocation）"></a>弹性资源分配（Elastic Resource Allocation）</h5><p>算法描述：</p>
+<p><img src="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/ElasticAlloc.png" width="500"></p>
+<ul>
+<li><p><em>nanosleep()</em>是Linux内核函数，会挂起当前线程等待一段时间或者直到接收到调用当前线程的信号（Line 2）</p>
+</li>
+<li><p>为了防止过载，<em>GU max</em>默认的最大值是90%（Line 3）</p>
+</li>
+<li>如果物理GPU计算卡仍然有空闲资源，也就是说<em>GU free &gt; 0</em>，即使容器的资源请求已经超出其配额，vGPU Library也会继续给容器分配计算资源（Line 4-5）。<strong>如果系统没有剩余的空闲资源（<em>GU free &lt;= 0</em>）并且容器的消耗的资源大于其配额，vGPU Library会逐渐收回超额（over-allocated）资源</strong>（Line 6-7）</li>
+<li>超额资源的回收采用非抢占式策略（non-preemptive strategy），就是说会等到容器中占用线程的核函数执行完后再回收线程资源。<strong><em>CU cores</em>可以被理解为一种token，容器执行核函数时需要消耗该token，当核函数执行完成释放线程资源时容器又回重新拥有该token</strong>。<em>CU cores</em>的初始值等于容器的计算资源配额，<em>CU cores</em>为零时（系统没有空闲的资源，并且该容器的计算资源配额都正在被用于执行核函数），vGPU Library不会再给容器分配任何计算资源，直到容器的<em>CU cores</em>大于零（其他容器释放了空闲资源，或者该容器有核函数完成释放了资源，容器重新获得<em>CU cores</em>）</li>
+</ul>
+<p>弹性资源分配举例：</p>
+<p><img src="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/EgElasticAlloc.png" width="500"></p>
+<p>a）首先，容器A申请了0.3个GPU，并且被GPU Scheduler调度到了一个完全空闲的GPU上</p>
+<p>b）由于GPU完全空闲，所以容器A会逐渐占用所有的空闲资源，默认最大可占用90%</p>
+<p>c）此时容器B申请了0.7个GPU，也被调度到了此GPU上，但是由于容器A占用了所有的空闲资源，所以需要从容器A回收超额线程资源并分配给容器B</p>
+<p>d）重复经过几次资源的重新分配，容器A和容器B所占用的资源与其资源配额相同</p>
+<p><em>（这里有一个问题，这个资源分配的线程何时会被调用，周期性的调用还是等待容器有资源请求时才被调用。如果是周期性的调用容器的资源分配在临界值时会不会出现振荡？因为算法逻辑中一旦flag要么是1要么是-1，要么是分配资源要么是回收资源，不会出现既不分配也不回收的情况。如果是容器有资源请求时才被调用，那么资源回收又是如何触发的？感觉没有说清楚，也有可能是在临界值出现振荡不会有影响）</em></p>
+<p><em>（还有就是GU free只在分配超额资源时会有限制，如果容器消耗的资源还没有达到配额，还是会将剩下的10%分配给容器）</em></p>
+<h5 id="动态资源分配（Dynamic-Resource-Allocation）"><a href="#动态资源分配（Dynamic-Resource-Allocation）" class="headerlink" title="动态资源分配（Dynamic Resource Allocation）"></a>动态资源分配（Dynamic Resource Allocation）</h5><p>这个比较简单，就是说在容器运行过程中允许修改容器的资源配额</p>
+<h3 id="4-Experiment"><a href="#4-Experiment" class="headerlink" title="4. Experiment"></a>4. Experiment</h3><p>……</p>
+<h3 id="5-Conclusion"><a href="#5-Conclusion" class="headerlink" title="5.Conclusion"></a>5.Conclusion</h3><p>……</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>主要的关键点有三个</p>
+<ul>
+<li>整个系统的架构和模块功能的划分</li>
+<li>vGPU Library的实现方法，如何通过拦截CUDA API实现对GPU内存和线程使用的限制</li>
+<li>弹性资源分配策略</li>
+</ul>
+<p>系统架构和模块功能阐述的比较清楚的。但是CUDA API拦截和拦截后如何进行资源管理好像没有讲明白。弹性资源分配策略还是比较巧妙的，用于线程资源的管理应该是可行的。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>论文地址 <a href="https://ieeexplore.ieee.org/abstract/document/8672318" target="_blank" rel="noopener">https://ieeexplore.ieee.org/abstract/document/8672318</a></p>
+<p>腾讯云论坛GaiaStack介绍 <a href="https://cloud.tencent.com/developer/article/1389547" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1389547</a></p>
+<p>腾讯云市场GaiaStack <a href="https://market.cloud.tencent.com/products/3966?productId=3966#" target="_blank" rel="noopener">https://market.cloud.tencent.com/products/3966?productId=3966#</a></p>
+<p>Github开源代码 <a href="https://github.com/tkestack/gpu-manager" target="_blank" rel="noopener">https://github.com/tkestack/gpu-manager</a></p>
+
       
 
       
@@ -205,11 +311,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GPU</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">虚拟化</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">虚拟化</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">论文笔记</a>
         		</li>
       		
 		</ul>
@@ -228,18 +334,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/02/01/关于Docker/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          关于Docker
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/09/03/记一个愚蠢的BUG/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">记一个愚蠢的BUG</div>
+    <a href="/2020/02/01/关于Docker/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">关于Docker</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -258,6 +355,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#论文内容"><span class="toc-number">1.</span> <span class="toc-text">论文内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#摘要"><span class="toc-number">1.1.</span> <span class="toc-text">摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">1. Introduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Related-Work"><span class="toc-number">1.3.</span> <span class="toc-text">2. Related Work</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Design-And-Implementation"><span class="toc-number">1.4.</span> <span class="toc-text">3. Design And Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#A-系统设计"><span class="toc-number">1.4.1.</span> <span class="toc-text">A.  系统设计</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#a-GPU-Manager"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">a) GPU Manager</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b-GPU-Scheduler"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">b) GPU Scheduler</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#c-vGPU-Manager"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">c) vGPU Manager</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#d-vGPU-Library"><span class="toc-number">1.4.1.4.</span> <span class="toc-text">d) vGPU Library</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#系统工作流程"><span class="toc-number">1.4.1.5.</span> <span class="toc-text">系统工作流程</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#B-优化策略"><span class="toc-number">1.4.2.</span> <span class="toc-text">B. 优化策略</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#弹性资源分配（Elastic-Resource-Allocation）"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">弹性资源分配（Elastic Resource Allocation）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#动态资源分配（Dynamic-Resource-Allocation）"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">动态资源分配（Dynamic Resource Allocation）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Experiment"><span class="toc-number">1.5.</span> <span class="toc-text">4. Experiment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Conclusion"><span class="toc-number">1.6.</span> <span class="toc-text">5.Conclusion</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">2.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-number">3.</span> <span class="toc-text">参考资料</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
