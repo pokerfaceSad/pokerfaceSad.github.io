@@ -6,15 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: 虚拟机 | xinyuan的blog</title>
+  <title>xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
+  <meta name="description" content="Docker的网络虚拟化0. Linux网络基础由于网络虚拟化涉及到很多网络相关的基础知识，发现自己对很多基本概念还是没有理清楚，Linux中网络相关的东西跟《计算机网络》里面的内容还是有很大距离。 经过几天对Linux网络的摸索，将网络中关键模块的层级依赖关系大概总结出这么一个图： 1234567891011121314151617181920212223242526+-------------">
+<meta property="og:type" content="article">
 <meta property="og:title" content="xinyuan的blog">
-<meta property="og:url" content="http://yoursite.com/tags/虚拟机/index.html">
+<meta property="og:url" content="http://yoursite.com/2020/02/09/Docker的网络虚拟化/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
+<meta property="og:description" content="Docker的网络虚拟化0. Linux网络基础由于网络虚拟化涉及到很多网络相关的基础知识，发现自己对很多基本概念还是没有理清楚，Linux中网络相关的东西跟《计算机网络》里面的内容还是有很大距离。 经过几天对Linux网络的摸索，将网络中关键模块的层级依赖关系大概总结出这么一个图： 1234567891011121314151617181920212223242526+-------------">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-02-14T06:45:29.770Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="xinyuan的blog">
+<meta name="twitter:description" content="Docker的网络虚拟化0. Linux网络基础由于网络虚拟化涉及到很多网络相关的基础知识，发现自己对很多基本概念还是没有理清楚，Linux中网络相关的东西跟《计算机网络》里面的内容还是有很大距离。 经过几天对Linux网络的摸索，将网络中关键模块的层级依赖关系大概总结出这么一个图： 1234567891011121314151617181920212223242526+-------------">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -132,110 +136,167 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Docker的网络虚拟化" class="article article-type-post " itemscope="" itemprop="blogPost">
+  <div class="article-inner">
     
-    
+    <!-- 目录内容 -->
+
+<!-- 目录内容结束 -->
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Docker的网络虚拟化"><a href="#Docker的网络虚拟化" class="headerlink" title="Docker的网络虚拟化"></a>Docker的网络虚拟化</h1><h2 id="0-Linux网络基础"><a href="#0-Linux网络基础" class="headerlink" title="0. Linux网络基础"></a>0. Linux网络基础</h2><p>由于网络虚拟化涉及到很多网络相关的基础知识，发现自己对很多基本概念还是没有理清楚，Linux中网络相关的东西跟《计算机网络》里面的内容还是有很大距离。</p>
+<p>经过几天对Linux网络的摸索，将网络中关键模块的层级依赖关系大概总结出这么一个图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">|                                                                             |</span><br><span class="line">|                                        +------------+                       |</span><br><span class="line">|         User Space                     |Applications|                       |</span><br><span class="line">|                                        +-----+------+                       |</span><br><span class="line">|                                              |                              |</span><br><span class="line">+------------------------------------------+---v----+-------------------------+</span><br><span class="line">|                                          | Socket |                         |</span><br><span class="line">|                                          +---+----+                         |</span><br><span class="line">|                                              |                              |</span><br><span class="line">|                             +----------------v------------------+           |</span><br><span class="line">|                             |                |  Transfer Layer  |           |</span><br><span class="line">|         Kernel Space        | Protocol Stack |------------------+           |</span><br><span class="line">|                             |                |  Network Layer   |           |</span><br><span class="line">|                             +-----------------------------------+           |</span><br><span class="line">|                                              |                              |</span><br><span class="line">|                                     +--------v------------+                 |</span><br><span class="line">|                                     |Network Device Driver|                 |</span><br><span class="line">+----------------------------------------------+------------------------------+</span><br><span class="line">|                                              |                              |</span><br><span class="line">|                                              |                              |</span><br><span class="line">|                                   +----------v--------------+               |</span><br><span class="line">|        Physical Device            |Network Interface(Device)|               |</span><br><span class="line">|                                   +-------------------------+               |</span><br><span class="line">|                                                                             |</span><br><span class="line">+-----------------------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+<p>有了一些新的认识：</p>
+<ul>
+<li>Linux内核中的协议栈（Protocol Stack）只实现了传输层和网络层的协议（TCP、UDP、ARP、IP、ICMP等），应用层的协议（HTTP、SFTP、FTP等）由用户态的应用程序自行实现，链路层的协议（ethernet、802.11等）由网络设备的驱动和硬件实现</li>
+<li>实际的网络系统并不是严格按照协议分层去实现的，分层协议模型只是一个理论模型，各种分层模型中TCP/IP四层模型比较接近于现代互联网的实现</li>
+<li>Socket连接着应用层和传输层，也连接着内核空间和用户空间，是协议栈向外暴露的统一接口。用户空间中的应用程序可以通过Socket接口创建各种协议连接</li>
+<li><code>ifconfig</code>命令列出的是所有的Network Interface，其中有物理网络设备也有虚拟网络设备，<code>ens33</code>，<code>eth0</code>等都是典型的物理网络设备，<code>lo</code>、<code>docker0</code>、<code>veth</code>等都是典型的虚拟网络设备。内核集成了一些物理网络设备的驱动（但应该也有工作在用户态下的驱动），通过驱动控制物理网络设备发送接收数据。内核提供的虚拟网络设备应该是对网络设备驱动和物理网络设备的虚拟化，工作在协议栈之下</li>
+<li>路由表（routing tables）建立了一些IP地址和Network Interface的映射，协议栈中的网络层根据这些映射选择发送包的具体Network Interface</li>
+<li>用户态（User Mode）和（Kernel Mode）是指程序运行的状态（State），运行在Kernel Mode下的程序可以不受限制的直接访问系统设备，运行在User Mode下的程序需要通过内核提供的系统调用（System Call）接口受限制的访问设备。User Space和Kernel Space是对内存空间的划分，User Mode的程序运行在User Space中，Kernel Mode的程序运行在Kernel Space中。Userland是指运行在User Mode下的软件集合</li>
+</ul>
+<h2 id="1-Linux-Network-Namespace"><a href="#1-Linux-Network-Namespace" class="headerlink" title="1. Linux Network Namespace"></a>1. Linux Network Namespace</h2><p>Docker的网络虚拟化基于Linux内核提供的Network Namespace特性实现，每一个Network Namespace都有自己的Network Stack，即网络接口，路由表，防火墙规则等，大概就是上面那个图中内容。</p>
+<p>首先，抛开Docker，看看Linux中的Network Namespace是什么样的？</p>
+<p>创建一个新的Network Namespace <code>test1</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ip netns add test1</span></span><br><span class="line">root@ubuntu:~<span class="comment"># ip netns list</span></span><br><span class="line">test1</span><br></pre></td></tr></table></figure>
+<p>在<code>test1</code>内执行<code>ip a</code>，列出所有网络接口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ip netns exec test1 ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK&gt; mtu 65536 qdisc noop state DOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br></pre></td></tr></table></figure>
+<p>发现只有一个用于本地通信的回环（loopback）接口，处于<code>DOWN</code>状态</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ip netns exec test1 ping 127.0.0.1</span></span><br><span class="line">connect: Network is unreachable</span><br></pre></td></tr></table></figure>
+<p><code>ping</code>自身失败，启动<code>lo</code>设备，再<code>ping</code>，发现成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# ip netns exec test1 ip link set dev lo up</span><br><span class="line">root@ubuntu:~# ip netns exec test1 ip link</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">root@ubuntu:~# ip netns exec test1 ping 127.0.0.1</span><br><span class="line">PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.</span><br><span class="line">64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.016 ms</span><br><span class="line">64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.049 ms</span><br><span class="line">64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.046 ms</span><br><span class="line">^C</span><br><span class="line">--- 127.0.0.1 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 2032ms</span><br><span class="line">rtt min/avg/max/mdev = 0.016/0.037/0.049/0.014 ms</span><br></pre></td></tr></table></figure>
+<h2 id="2-连接Network-Namespace"><a href="#2-连接Network-Namespace" class="headerlink" title="2. 连接Network Namespace"></a>2. 连接Network Namespace</h2><p>此时<code>test1</code>这个Network Namespace只能内部通信，无法与其他Network Namespace通信，例如就无法与宿主机所在的<code>Default</code>  Network Namespace通信，因此要将它们连接起来。</p>
+<h3 id="2-1-Veth-Pair直连"><a href="#2-1-Veth-Pair直连" class="headerlink" title="2.1 Veth Pair直连"></a>2.1 Veth Pair直连</h3><p>连接Network Namespace有点像物理世界中的计算机组网，要连接两台计算机最简单粗暴的方式就是用一根网线直接将它们连接起来。连接两个Namespace需要用到<strong>Veth Pair</strong>，Veth是Linux内核提供的一种网络虚拟化设备，总是成对存在，就像一根虚拟网线的两端，分别连接到需要接通的两个Network Namespace上。</p>
+<blockquote>
+<p>​    The <strong>veth</strong> devices are virtual Ethernet devices.  They can act as tunnels between network namespaces to create a bridge to a physical network device in another namespace, but can also be used as standalone network devices.<br>​    <strong>veth</strong> devices are always created in interconnected pairs.</p>
+<p>​                                                                                                    –<a href="http://man7.org/linux/man-pages/man4/veth.4.html#top_of_page" target="_blank" rel="noopener">veth(4) - Linux manual page - man7.org</a></p>
+</blockquote>
+<p>Veth Pair连接到两个Network Namespace的示意如图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+-------------------------------+                       +-------------------------------+</span><br><span class="line">|                               |                       |                               |</span><br><span class="line">|  Default Network Namespace    |                       |    test1 Network Namespace    |</span><br><span class="line">|                               |                       |                               |</span><br><span class="line">|                     +---------+      veth pair        +---------+                     |</span><br><span class="line">|                     | veth-a  &lt;-----------------------&gt;  veth-b |                     |</span><br><span class="line">|                     +---------+                       +---------+                     |</span><br><span class="line">|                               |                       |                               |</span><br><span class="line">+-------------------------------+                       +-------------------------------+</span><br></pre></td></tr></table></figure>
+<p> 在<code>Default</code> Network Namespace上创建一对Veth</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ip link add veth-a type veth peer name veth-b</span></span><br><span class="line">root@ubuntu:~<span class="comment"># ip link</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">2: ens33: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000</span><br><span class="line">    link/ether 00:0c:29:d9:7e:f2 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">5: docker0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default</span><br><span class="line">    link/ether 02:42:87:84:d5:2b brd ff:ff:ff:ff:ff:ff</span><br><span class="line">14: veth-b@veth<span class="_">-a</span>: &lt;BROADCAST,MULTICAST,M-DOWN&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000</span><br><span class="line">    link/ether ea:96:83:5a:1e:81 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">15: veth<span class="_">-a</span>@veth-b: &lt;BROADCAST,MULTICAST,M-DOWN&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000</span><br><span class="line">    link/ether f2:2d:dc:62:3a:79 brd ff:ff:ff:ff:ff:ff</span><br></pre></td></tr></table></figure>
+<p>将<code>veth-b</code>移动到<code>test1</code>中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ip link set veth-b netns test1</span></span><br><span class="line">root@ubuntu:~<span class="comment"># ip netns exec test1 ip link</span></span><br><span class="line">……</span><br><span class="line">14: veth-b@if15: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000</span><br><span class="line">    link/ether ea:96:83:5a:1e:81 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">root@ubuntu:~<span class="comment"># ip link</span></span><br><span class="line">……</span><br><span class="line">15: veth<span class="_">-a</span>@if14: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000</span><br><span class="line">    link/ether f2:2d:dc:62:3a:79 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br></pre></td></tr></table></figure>
+<p>要使得<code>veth-a</code>和<code>veth-b</code>正常工作，还需要启动它们，并为它们设置ip地址从而连接协议栈底层的网络层</p>
+<p>设置<code>Default</code>中的<code>veth-a</code>ip为192.168.2.1/24</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ip addr add 192.168.2.1/24 dev veth-a</span></span><br><span class="line">root@ubuntu:~<span class="comment"># ip link set veth-a up</span></span><br><span class="line">root@ubuntu:~<span class="comment"># ip addr</span></span><br><span class="line">……</span><br><span class="line">15: veth<span class="_">-a</span>@if14: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state LOWERLAYERDOWN group default qlen 1000</span><br><span class="line">    link/ether f2:2d:dc:62:3a:79 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 192.168.2.1/24 scope global veth<span class="_">-a</span></span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<p>设置<code>test1</code>中的<code>veth-b</code>ip为192.168.2.2/24</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ip netns exec test1 ip addr add 192.168.2.2/24 dev veth-b</span></span><br><span class="line">root@ubuntu:~<span class="comment"># ip netns exec test1 ip link set veth-b up</span></span><br><span class="line">root@ubuntu:~<span class="comment"># ip netns exec test1 ip addr</span></span><br><span class="line">……</span><br><span class="line">14: veth-b@if15: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000</span><br><span class="line">    link/ether ea:96:83:5a:1e:81 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 192.168.2.2/24 scope global veth-b</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::e896:83ff:fe5a:1e81/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<p>此时两个Network Namespace已经可以通过<code>veth-a</code>和<code>veth-b</code>通信</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ping 192.168.2.2</span></span><br><span class="line">PING 192.168.2.2 (192.168.2.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from 192.168.2.2: icmp_seq=1 ttl=64 time=0.039 ms</span><br><span class="line">64 bytes from 192.168.2.2: icmp_seq=2 ttl=64 time=0.043 ms</span><br><span class="line">64 bytes from 192.168.2.2: icmp_seq=3 ttl=64 time=0.065 ms</span><br><span class="line">64 bytes from 192.168.2.2: icmp_seq=4 ttl=64 time=0.051 ms</span><br><span class="line">^C</span><br><span class="line">--- 192.168.2.2 ping statistics ---</span><br><span class="line">4 packets transmitted, 4 received, 0% packet loss, time 3073ms</span><br><span class="line">rtt min/avg/max/mdev = 0.039/0.049/0.065/0.012 ms</span><br><span class="line">root@ubuntu:~<span class="comment"># ip netns exec test1 ping 192.168.1.1</span></span><br><span class="line">connect: Network is unreachable</span><br><span class="line">root@ubuntu:~<span class="comment"># ip netns exec test1 ping 192.168.2.1</span></span><br><span class="line">PING 192.168.2.1 (192.168.2.1) 56(84) bytes of data.</span><br><span class="line">64 bytes from 192.168.2.1: icmp_seq=1 ttl=64 time=0.114 ms</span><br><span class="line">64 bytes from 192.168.2.1: icmp_seq=2 ttl=64 time=0.038 ms</span><br><span class="line">64 bytes from 192.168.2.1: icmp_seq=3 ttl=64 time=0.103 ms</span><br><span class="line">^C</span><br><span class="line">--- 192.168.2.1 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 2042ms</span><br><span class="line">rtt min/avg/max/mdev = 0.038/0.085/0.114/0.033 ms</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-通过Linux-bridge连接"><a href="#2-2-通过Linux-bridge连接" class="headerlink" title="2.2 通过Linux bridge连接"></a>2.2 通过Linux bridge连接</h3><p>在为物理主机组网时，用网线只能连接两台计算机，要想为两台以上的计算机组网，就需要用到交换机、路由器等网络设备。Network Namespace的连接也一样，要想连接将两个以上的Network Namspace连接起来，就需要用到<strong>虚拟交换机（virtual network switch）</strong>，Docker使用的<strong>Linux bridge</strong>就是虚拟交换机的一种，是Linux提供一种虚拟交换机解决方案。</p>
+<blockquote>
+<p>A bridge is a piece of software used to unite two or more network segments. A bridge behaves like a virtual network switch, working transparently (the other machines do not need to know or care about its existence). Any real devices (e.g. <code>eth0</code>) and virtual devices (e.g. <code>tap0</code>) can be connected to it.</p>
+<p>​                                                                                                                – <a href="https://wiki.archlinux.org/index.php/Network_bridge" target="_blank" rel="noopener">Network bridge, ArchLinux</a></p>
+</blockquote>
+<p>用Linux bridge连接两个Network Namespace的示意如图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">+----------------------+                     +----------------------+</span><br><span class="line">|                      |                     |                      |</span><br><span class="line">| ns1 Network Namespace|                     |ns2 Network Namespace |</span><br><span class="line">|                      |                     |                      |</span><br><span class="line">|            +---------+                     +---------+            |</span><br><span class="line">|            | veth-a  |---+            +----|  veth-b |            |</span><br><span class="line">|            +---------|   |            |    |---------+            |</span><br><span class="line">+----------------------+   |            |    +----------------------+</span><br><span class="line">                           |            |</span><br><span class="line">                           |            |</span><br><span class="line">                           |            |</span><br><span class="line">                +----------+--+      +--+----------+</span><br><span class="line">                | br-veth-a   |      | br-veth-b   |</span><br><span class="line">                +-------------+------+-------------+</span><br><span class="line">                |            bridge br0            |</span><br><span class="line">                +----------------------------------+</span><br></pre></td></tr></table></figure>
+<p>创建两个Network Namespace并用bridge连接的命令行代码如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建两个Network Namespace</span></span><br><span class="line">ip netns add ns1</span><br><span class="line">ip netns add ns2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建bridge，禁用stp</span></span><br><span class="line">brctl addbr br0</span><br><span class="line">brctl stp br0 off</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建两对veth，连接到Namespace和bridge</span></span><br><span class="line">ip link add veth<span class="_">-a</span> <span class="built_in">type</span> veth peer name br-veth<span class="_">-a</span></span><br><span class="line">ip link add veth-b <span class="built_in">type</span> veth peer name br-veth-b</span><br><span class="line">ip link <span class="built_in">set</span> veth<span class="_">-a</span> netns ns1</span><br><span class="line">brctl addif br0 br-veth<span class="_">-a</span></span><br><span class="line">ip link <span class="built_in">set</span> veth-b netns ns2</span><br><span class="line">brctl addif br0 br-veth-b</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为veth设置ip</span></span><br><span class="line">ip netns <span class="built_in">exec</span> ns1 ip addr add 192.168.2.2/24 dev veth<span class="_">-a</span></span><br><span class="line">ip netns <span class="built_in">exec</span> ns2 ip addr add 192.168.2.3/24 dev veth-b</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动bridge，veth</span></span><br><span class="line">ip link <span class="built_in">set</span> br0 up</span><br><span class="line">ip netns <span class="built_in">exec</span> ns1 ip link <span class="built_in">set</span> veth<span class="_">-a</span> up</span><br><span class="line">ip netns <span class="built_in">exec</span> ns2 ip link <span class="built_in">set</span> veth-b up</span><br><span class="line">ip link <span class="built_in">set</span> br-veth<span class="_">-a</span> up</span><br><span class="line">ip link <span class="built_in">set</span> br-veth-b up</span><br></pre></td></tr></table></figure></p>
+<p>执行成功后，用<code>ping</code>进行测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip netns <span class="built_in">exec</span> ns1 ping 192.168.2.3</span><br><span class="line">ip netns <span class="built_in">exec</span> ns2 ping 192.168.2.2</span><br></pre></td></tr></table></figure>
+<p>在ubuntu 16.04上进行实验时，出现了<code>ping</code>不通的情况，查了资料后发现是iptables的原因，bridge上的流量经过iptables处理时走到了FORWARD链上，而主机的iptables没有设置转发规则，因此触发FORWARD链的默认策略（Default Policy）丢弃（Drop），执行下面的命令使得bridge上的流量不经过iptables处理，从而解决问题，参考<a href="https://computingforgeeks.com/how-to-disable-netfilter-on-a-kvm-bridge/" target="_blank" rel="noopener">How To disable netfilter on Linux KVM bridge</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 0 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables</span><br></pre></td></tr></table></figure>
+<h2 id="3-连接Network-Namespace与外部网络"><a href="#3-连接Network-Namespace与外部网络" class="headerlink" title="3. 连接Network Namespace与外部网络"></a>3. 连接Network Namespace与外部网络</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">+---------------------------------------------------------------+-----------------------------------------+-----------------------------------------+</span><br><span class="line">|                               VM                              |                  ns1                    |                  ns2                    |</span><br><span class="line">|                                                               |                                         |                                         |</span><br><span class="line">|      +------------------------------------------------+       |       +-------------------------+       |       +-------------------------+       |</span><br><span class="line">|      |             Newwork Protocol Stack             |       |       |  Newwork Protocol Stack |       |       |  Newwork Protocol Stack |       |</span><br><span class="line">|      +------------------------------------------------+       |       +-------------------------+       |       +-------------------------+       |</span><br><span class="line">|           ↑             ↑                                     |                   ↑                     |                    ↑                    |</span><br><span class="line">|...........+.............+.....................................|...................+.....................|....................+....................|</span><br><span class="line">|           ↓             ↓                                     |                   ↓                     |                    ↓                    |</span><br><span class="line">|       +-------+    +--------+                                 |               +--------+                |                +--------+               |</span><br><span class="line">|       | .1.100|    |  .2.1  |                                 |               |  .2.2  |                |                |  .2.3  |               |</span><br><span class="line">|       +-------+    +--------+     +---------+                 |               +--------+                |                +--------+               |</span><br><span class="line">|       | ens33 |    |   br0  +&lt;---&gt;+br-veth-a|                 |               | veth-a |                |                | veth-b |               |</span><br><span class="line">|       +-------+    +--------+     +---------+                 |               +--------+                |                +--------+               |</span><br><span class="line">|           ↑             ↑             ↑                       |                   ↑                     |                    ↑                    |</span><br><span class="line">|           +             +             +-------------------------------------------+                     |                    +                    |</span><br><span class="line">|           |             ↓                                     |                                         |                    |                    |</span><br><span class="line">|           |        +---------+                                |                                         |                    |                    |</span><br><span class="line">|           |        |br-veth-b|                                |                                         |                    |                    |</span><br><span class="line">|           |        +---------+                                |                                         |                    |                    |</span><br><span class="line">|           |             ↑                                     |                                         |                    |                    |</span><br><span class="line">|           |             +----------------------------------------------------------------------------------------------------+                    |</span><br><span class="line">|           |                                                   |                                         |                                         |</span><br><span class="line">|           |                                                   |                                         |                                         |</span><br><span class="line">|           |                                                   |                                         |                                         |</span><br><span class="line">+-----------+---------------------------------------------------+-----------------------------------------+-----------------------------------------+</span><br><span class="line">            ↓</span><br><span class="line">          VM Network  (192.168.1.0/24)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建两个Network Namespace</span></span><br><span class="line">ip netns add ns1</span><br><span class="line">ip netns add ns2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建bridge，禁用stp</span></span><br><span class="line">brctl addbr br0</span><br><span class="line">brctl stp br0 off</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建两对veth，连接到Namespace和bridge</span></span><br><span class="line">ip link add veth<span class="_">-a</span> <span class="built_in">type</span> veth peer name br-veth<span class="_">-a</span></span><br><span class="line">ip link add veth-b <span class="built_in">type</span> veth peer name br-veth-b</span><br><span class="line">ip link <span class="built_in">set</span> veth<span class="_">-a</span> netns ns1</span><br><span class="line">brctl addif br0 br-veth<span class="_">-a</span></span><br><span class="line">ip link <span class="built_in">set</span> veth-b netns ns2</span><br><span class="line">brctl addif br0 br-veth-b</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为veth设置ip</span></span><br><span class="line">ip netns <span class="built_in">exec</span> ns1 ip addr add 192.168.2.2/24 dev veth<span class="_">-a</span></span><br><span class="line">ip netns <span class="built_in">exec</span> ns2 ip addr add 192.168.2.3/24 dev veth-b</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动bridge，veth</span></span><br><span class="line">ip link <span class="built_in">set</span> br0 up</span><br><span class="line">ip netns <span class="built_in">exec</span> ns1 ip link <span class="built_in">set</span> veth<span class="_">-a</span> up</span><br><span class="line">ip netns <span class="built_in">exec</span> ns2 ip link <span class="built_in">set</span> veth-b up</span><br><span class="line">ip link <span class="built_in">set</span> br-veth<span class="_">-a</span> up</span><br><span class="line">ip link <span class="built_in">set</span> br-veth-b up</span><br><span class="line"></span><br><span class="line"><span class="comment"># bridge上的流量不经过</span></span><br><span class="line"><span class="built_in">echo</span> 0 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为bridge设置ip，设置bridge为ns1，ns2的默认网关</span></span><br><span class="line">ip addr add 192.168.2.1/24 dev br0</span><br><span class="line">ip netns <span class="built_in">exec</span> ns1 \</span><br><span class="line">	ip route add default via 192.168.2.1</span><br><span class="line">ip netns <span class="built_in">exec</span> ns2 \</span><br><span class="line">	ip route add default via 192.168.2.1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开启宿主机IP FORWARD</span></span><br><span class="line"><span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置SNAT，宿主机在转发来自192.168.2.0/24的包时会进行NAT转换，修改source IP</span></span><br><span class="line">iptables -t nat -A POSTROUTING -s 192.168.2.0/24 -o ens33 -j MASQUERADE</span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认的FORWARD规则为DROP，指定ens33-&gt;br0和br0-&gt;ens33的包ACCEPT</span></span><br><span class="line">iptables -t filter -A FORWARD -i ens33 -o br0 -j ACCEPT</span><br><span class="line">iptables -t filter -A FORWARD -o ens33 -i br0 -j ACCEPT</span><br></pre></td></tr></table></figure>
+<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><h3 id="同一个Network-Namespace中"><a href="#同一个Network-Namespace中" class="headerlink" title="同一个Network Namespace中"></a>同一个Network Namespace中</h3><h4 id="只有一个分配IP"><a href="#只有一个分配IP" class="headerlink" title="只有一个分配IP"></a>只有一个分配IP</h4><p><code>veth-a</code>192.168.2.1/24<br><code>veth-b</code>未分配</p>
+<p><code>ping 192.168.2.2</code></p>
+<p><code>ping</code>不通，协议栈发现192.168.2.2和192.168.2.1/24在同一个网段，于是通过veth-a发包，首先进行<code>arp</code>请求，<code>ARP, Request who-has 192.168.2.2 tell 192.168.2.1</code>，但是没有回复，因为没有任何设备被分配了192.168.2.2，一直循环<code>arp</code>，所以<code>ping</code>不通</p>
+<h4 id="都分配IP"><a href="#都分配IP" class="headerlink" title="都分配IP"></a>都分配IP</h4><p><code>veth-a</code>192.168.2.1/24<br><code>veth-b</code>192.168.2.2/24</p>
+<p><code>ping 192.168.2.1</code></p>
+<p><code>Ping 192.168.2.2</code></p>
+<p>都能<code>ping</code>通，但是<code>tcpdump -i veth-a</code>和<code>tcpdump -i veth-b</code>都抓不到包</p>
+<p>因为都走了<code>lo</code>，<code>tcpdump -i lo</code>能够抓到ICMP包</p>
+<p><code>ping 192.168.2.1 -I veth-b</code></p>
+<p><code>ping 192.168.2.2 -I veth-a</code></p>
+<p>都能<code>ping</code>通，但是<code>tcpdump -i veth-a</code>和<code>tcpdump -i veth-b</code>上只有ICMP Request包</p>
+<p>ICMP Reply包都走了<code>lo</code>，<code>tcpdump -i lo</code>能够抓到ICMP Reply包</p>
+<blockquote>
+<p>如果还是<code>ping</code>不通，可能是因为非Debian系统需要配置一下<code>ARP</code>应答策略</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/conf/veth<span class="_">-a</span>/accept_local</span><br><span class="line">&gt; <span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/conf/veth-b/accept_local</span><br><span class="line">&gt; <span class="built_in">echo</span> 0 &gt; /proc/sys/net/ipv4/conf/all/rp_filter</span><br><span class="line">&gt; <span class="built_in">echo</span> 0 &gt; /proc/sys/net/ipv4/conf/veth<span class="_">-a</span>/rp_filter</span><br><span class="line">&gt; <span class="built_in">echo</span> 0 &gt; /proc/sys/net/ipv4/conf/veth-b/rp_filter</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="两个Network-Namespace"><a href="#两个Network-Namespace" class="headerlink" title="两个Network Namespace"></a>两个Network Namespace</h3><h4 id="只有一个分配IP-1"><a href="#只有一个分配IP-1" class="headerlink" title="只有一个分配IP"></a>只有一个分配IP</h4><p><code>default veth-a</code>192.168.2.1/24<br><code>test1 veth-b</code>未分配</p>
+<p><code>ip netns exec test1 ping 192.168.2.1</code></p>
+<p>走<code>lo</code>，<code>ping</code>不通，<code>tcpdump -i veth-a</code>也抓不到ICMP Request包</p>
+<p><code>ip netns exec test1 ping 192.168.2.1 -I veth-b</code></p>
+<p>走<code>veth-b</code>，<code>ping</code>不通，<code>tcpdump -i veth-a</code>能抓到ICMP Request包</p>
+<h4 id="都分配IP-1"><a href="#都分配IP-1" class="headerlink" title="都分配IP"></a>都分配IP</h4><p><code>default veth-a</code>192.168.2.1/24<br><code>test1 veth-b</code>192.168.2.2/24</p>
+<p><code>ping 192.168.2.2</code></p>
+<p><code>ip netns exec test1 ping 192.168.2.1</code></p>
+<p>能<code>ping</code>通，<code>tcpdump -i veth-a</code>和<code>ip netns exec test1 tcpdump -i veth-b</code>都能抓到包</p>
+<h2 id="相关Linux指令"><a href="#相关Linux指令" class="headerlink" title="相关Linux指令"></a>相关Linux指令</h2><p>创建一个Network Namespace</p>
+<p><code>ip netns add &lt;network namespace name&gt;</code></p>
+<p>删除一个Network Namespace</p>
+<p><code>ip netns delete &lt;network namespace name&gt;</code></p>
+<p>列出当前所有Network Namespace</p>
+<p><code>ip netns list</code></p>
+<p>在某个Network Namespace中执行指令</p>
+<p><code>ip netns exec &lt;network namespace name&gt; &lt;command&gt;</code></p>
+<p>创建一对Veth</p>
+<p><code>ip link add &lt;p1-name&gt; type veth peer name &lt;p2-name&gt;</code></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>Linux Network Namespace Introduction <a href="http://docker-k8s-lab.readthedocs.io/en/latest/docker/netns.html" target="_blank" rel="noopener">http://docker-k8s-lab.readthedocs.io/en/latest/docker/netns.html</a></p>
+<p>Linux Switching – Interconnecting Namespaces <a href="http://www.opencloudblog.com/?p=66" target="_blank" rel="noopener">http://www.opencloudblog.com/?p=66</a></p>
+<p>Linux 虚拟网络设备 veth-pair 详解 <a href="https://www.cnblogs.com/bakari/p/10613710.html" target="_blank" rel="noopener">https://www.cnblogs.com/bakari/p/10613710.html</a></p>
+<p>Linux虚拟网络设备之veth <a href="https://segmentfault.com/a/1190000009251098" target="_blank" rel="noopener">https://segmentfault.com/a/1190000009251098</a></p>
+<p>Linux Manual Pages<a href="http://man7.org/linux/man-pages/man4/veth.4.html" target="_blank" rel="noopener">http://man7.org/linux/man-pages/man4/veth.4.html</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/09/kubeadm搭建kubernetes-1-11-5-环境/" class="archive-article-date">
-  	<time datetime="2019-01-09T08:12:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/09/kubeadm搭建kubernetes-1-11-5-环境/">kubeadm搭建kubernetes(1.11.5)环境</a>
-    </h1>
-  
+      
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">虚拟机</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kubernetes</a>
-        		</li>
-      		
-		</ul>
-	</div>
+      
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/01/06/Centos7虚拟机网络设置/" class="archive-article-date">
-  	<time datetime="2019-01-06T11:53:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/02/07/论文笔记《GaiaGPU Sharing GPUs in Container Clouds》/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">论文笔记《GaiaGPU：Sharing GPUs in Container Clouds》</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/06/Centos7虚拟机网络设置/">Centos7虚拟机网络设置</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">虚拟机</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kubernetes</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
 
 
           </div>
@@ -258,9 +319,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
