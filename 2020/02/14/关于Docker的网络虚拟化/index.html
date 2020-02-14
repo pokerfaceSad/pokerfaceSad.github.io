@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>关于Docker的网络虚拟化 | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="网络虚拟化是虚拟化技术的一部分，Docker的网络虚拟化除了Network Namespace之外还包含veth，bridge，NAT，iptables等很多关键因素">
+  <meta name="description" content="网络虚拟化是虚拟化技术的一部分，Docker的网络虚拟化除了Network Namespace之外还包含veth，bridge，NAT，iptables等很多关键因素。">
 <meta name="keywords" content="网络,Docker,虚拟化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于Docker的网络虚拟化">
 <meta property="og:url" content="http://yoursite.com/2020/02/14/关于Docker的网络虚拟化/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
-<meta property="og:description" content="网络虚拟化是虚拟化技术的一部分，Docker的网络虚拟化除了Network Namespace之外还包含veth，bridge，NAT，iptables等很多关键因素">
+<meta property="og:description" content="网络虚拟化是虚拟化技术的一部分，Docker的网络虚拟化除了Network Namespace之外还包含veth，bridge，NAT，iptables等很多关键因素。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-02-14T09:13:58.239Z">
+<meta property="og:updated_time" content="2020-02-14T09:20:38.758Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Docker的网络虚拟化">
-<meta name="twitter:description" content="网络虚拟化是虚拟化技术的一部分，Docker的网络虚拟化除了Network Namespace之外还包含veth，bridge，NAT，iptables等很多关键因素">
+<meta name="twitter:description" content="网络虚拟化是虚拟化技术的一部分，Docker的网络虚拟化除了Network Namespace之外还包含veth，bridge，NAT，iptables等很多关键因素。">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -185,7 +185,7 @@
 
     <div class="article-entry" itemprop="articleBody">
       
-        <p>网络虚拟化是虚拟化技术的一部分，Docker的网络虚拟化除了Network Namespace之外还包含<code>veth</code>，<code>bridge</code>，<code>NAT</code>，<code>iptables</code>等很多关键因素</p>
+        <p>网络虚拟化是虚拟化技术的一部分，Docker的网络虚拟化除了Network Namespace之外还包含<code>veth</code>，<code>bridge</code>，<code>NAT</code>，<code>iptables</code>等很多关键因素。</p>
 <a id="more"></a>
 <h2 id="0-Linux网络基础"><a href="#0-Linux网络基础" class="headerlink" title="0. Linux网络基础"></a>0. Linux网络基础</h2><p>由于网络虚拟化涉及到很多网络相关的基础知识，发现自己对很多基本概念还是没有理清楚，Linux中网络相关的东西跟《计算机网络》里面的内容还是有很大距离。</p>
 <p>经过几天对Linux网络的摸索，将网络中关键模块的层级依赖关系大概总结成这么一个图：</p>
