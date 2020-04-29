@@ -9,14 +9,14 @@
   <title>记一个愚蠢的BUG | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要注意代码同步。">
-<meta name="keywords" content="BUG,tensorflow,python,强化学习">
+<meta name="keywords" content="Python,BUG,tensorflow,强化学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一个愚蠢的BUG">
 <meta property="og:url" content="http://yoursite.com/2019/09/03/记一个愚蠢的BUG/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
 <meta property="og:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要注意代码同步。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-03T13:51:08.374Z">
+<meta property="og:updated_time" content="2020-04-28T04:04:41.577Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记一个愚蠢的BUG">
 <meta name="twitter:description" content="昨天在跑一个强化学习模型的测试时，发现测试结果与TensorBoard可视化出来的reward相去甚远，遂查找错误。查了模型Save和Restore的代码，没有发现问题，查了TensorBoard可视化的代码，没有发现问题。最后发现是环境的代码没有更新（忘记把新的gym环境代码更新到Anaconda中），导致Train和Test时的随机数种子不一样，生成的环境也不同。引以为戒，以后要注意代码同步。">
@@ -185,15 +185,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">BUG</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tensorflow</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -389,11 +389,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
+                <a href="javascript:void(0)" class="js-tag color3">Node.js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">异步</a>
               </li>
              
               <li class="article-tag-list-item">

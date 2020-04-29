@@ -23,7 +23,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/arch-GaiaGPU.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/ElasticAlloc.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/EgElasticAlloc.png">
-<meta property="og:updated_time" content="2020-02-07T11:13:15.704Z">
+<meta property="og:updated_time" content="2020-02-18T12:58:32.374Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记《GaiaGPU：Sharing GPUs in Container Clouds》">
 <meta name="twitter:description" content="2018年腾讯和北大发的一篇论文，一种容器云平台上的GPU虚拟化解决方案。对于GPU虚拟化关键的vCUDA部分讲得比较含糊，但是系统架构方面还是有很多值得学习的地方。">
@@ -237,7 +237,7 @@
 <li>如果请求的资源<strong>等于一整块GPU计算卡（=1）</strong>，则按照”使得单叶子节点（即没有兄弟节点的叶子节点）数量最少”的原则进行分配</li>
 <li>如果请求的资源<strong>大于一整块GPU计算卡（&gt;1）</strong>，则按照“最小化GPU间通信成本”的原则进行分配，两个GPU间的通讯成本取决于两个GPU之间的连接模式<em>（这里好像并没有说清楚这个通信成本到底怎么衡量）</em></li>
 </ul>
-<h5 id="c-vGPU-Manager"><a href="#c-vGPU-Manager" class="headerlink" title="c) vGPU Manager"></a>c) vGPU Manager</h5><p>vGPU Manager运行在宿主机上，负责分发容器的配置信息和监控被分配了vGPU资源的容器。当一个容器申请GPU资源时，GPU Manager会发送容器的配置信息给vGPU Manager，配置信息包括请求的GPU资源和该容器的<em>name</em>等。根据收到的这些容器的配置信息，vGPUManager会为这个容器在宿主机上创建一个独立的目录，这个目录以容器的<em>name</em>命名，这个目录的路径也会包含在GPU Manager返回给Kubelet的<em>allocateResponse</em>中。容器的配置信息会被保存在这个目录中，并且通过Kubelet分发给容器。<em>（将这个目录挂载到容器中？）</em></p>
+<h5 id="c-vGPU-Manager"><a href="#c-vGPU-Manager" class="headerlink" title="c) vGPU Manager"></a>c) vGPU Manager</h5><p>vGPU Manager运行在宿主机上，负责分发容器的配置信息和监控被分配了vGPU资源的容器。当一个容器申请GPU资源时，GPU Manager会发送容器的配置信息给vGPU Manager，配置信息包括请求的GPU资源和该容器的<em>name</em>等。根据收到的这些容器的配置信息，vGPU Manager会为这个容器在宿主机上创建一个独立的目录，这个目录以容器的<em>name</em>命名，这个目录的路径也会包含在GPU Manager返回给Kubelet的<em>allocateResponse</em>中。容器的配置信息会被保存在这个目录中，并且通过Kubelet分发给容器。<em>（将这个目录挂载到容器中？）</em></p>
 <p>vGPU Manager和vGPU Library以“服务器-客户端”模式进行通信。vGPU Manager会维护一个被分配了GPU资源且存活的容器的list，并且周期性的检查这些容器是否仍然存活，如果容器退出，vGPU Manager会从list中移除这个容器的信息，并且删除对应的目录。</p>
 <h5 id="d-vGPU-Library"><a href="#d-vGPU-Library" class="headerlink" title="d) vGPU Library"></a>d) vGPU Library</h5><p>vGPU Library运行在容器中，用于管理其所在容器的GPU资源，vGPU Library会在容器中第一次执行GPU程序时被加载（launched），启动后vGPU Library会想vGPU Manager注册自身。</p>
 <p><strong>vGPU Library利用LD_LIBRARY_PATH机制拦截CUDA库中与内存和计算相关的API</strong>。<em>LD_LIBRARY_PATH</em>是Linux系统中的一个环境变量，能够影响程序的运行时链接（runtime link，这里不知道该怎么翻译合适），LD_LIBRARY_PATH中包含的目录会在加载标准库目录之前加载。下表展示了所有被拦截的CUDA API：</p>
@@ -520,11 +520,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">强化学习</a>
+                <a href="javascript:void(0)" class="js-tag color3">Node.js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">异步</a>
               </li>
              
               <li class="article-tag-list-item">
