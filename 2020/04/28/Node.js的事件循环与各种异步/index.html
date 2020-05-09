@@ -17,7 +17,7 @@
 <meta property="og:description" content="以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，Promise, async, await看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/event_loop2.png">
-<meta property="og:updated_time" content="2020-04-29T04:03:53.647Z">
+<meta property="og:updated_time" content="2020-05-09T04:00:31.342Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node.js的事件循环与各种异步">
 <meta name="twitter:description" content="以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，Promise, async, await看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。">
@@ -246,8 +246,14 @@
 <h3 id="2-4-async-await"><a href="#2-4-async-await" class="headerlink" title="2.4 async / await"></a>2.4 async / await</h3><p>从上面的例子可以看出<code>Generator</code>函数的问题在于执行时很繁琐，<code>async / await</code>是<code>Generator</code>函数的语法糖，解决了调用复杂的问题，代码的可读性强。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">timeout_print = <span class="function">(<span class="params">content</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(content)</span><br><span class="line">      resolve()</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> timeout_print(<span class="string">'TimeOut 1'</span>)</span><br><span class="line">  <span class="keyword">await</span> timeout_print(<span class="string">'TimeOut 2'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo()</span><br></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>Node.js一个为Web后端而生的语言，其语法糖处处都在为Web后端这个场景考虑，各种各样的异步和网络处理库使得封装RESTful接口极为方便</li>
-<li>Python、Node.js这种精致灵巧和Java这种重剑无锋完全是两种不同的风格，最近越来越喜欢精致灵巧，不过随之而来的可能就是可读性上的牺牲。看者痛，写者快。</li>
+<li><p>Node.js一个为Web后端而生的语言，其语法糖处处都在为Web后端这个场景考虑，各种各样的异步和网络处理库使得封装RESTful接口极为方便</p>
+</li>
+<li><p>Python、Node.js这种精致灵巧和Java这种重剑无锋完全是两种不同的风格，最近越来越喜欢精致灵巧，不过随之而来的可能就是可读性上的牺牲。看者痛，写者快</p>
+<blockquote>
+<p>他们替我撞过了每一堵我可能要撞的高墙，摔进了每一道我可能要掉落的沟壑，然后告诉我，这条路没有错</p>
+<p>​                                                                                                          –韩寒 《1988：我想和这个世界谈谈》</p>
+</blockquote>
+</li>
 </ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>Event Loop and the Big Picture <a href="https://blog.insiderattack.net/event-loop-and-the-big-picture-nodejs-event-loop-part-1-1cb67a182810" target="_blank" rel="noopener">https://blog.insiderattack.net/event-loop-and-the-big-picture-nodejs-event-loop-part-1-1cb67a182810</a></p>
 <p>Node.js Docs <a href="https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/" target="_blank" rel="noopener">https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/</a></p>
@@ -426,18 +432,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">虚拟机</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">kubernetes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -447,6 +441,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">BUG</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">虚拟机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kubernetes</a>
               </li>
              
               <li class="article-tag-list-item">
