@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Node.js的事件循环与各种异步 | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，Promise, async, await看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。">
+  <meta name="description" content="以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，Promise,async,await看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。">
 <meta name="keywords" content="Node.js,异步">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node.js的事件循环与各种异步">
 <meta property="og:url" content="http://yoursite.com/2020/04/28/Node.js的事件循环与各种异步/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
-<meta property="og:description" content="以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，Promise, async, await看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。">
+<meta property="og:description" content="以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，Promise,async,await看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/event_loop2.png">
-<meta property="og:updated_time" content="2020-05-09T04:02:20.848Z">
+<meta property="og:updated_time" content="2020-05-09T04:03:44.911Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node.js的事件循环与各种异步">
-<meta name="twitter:description" content="以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，Promise, async, await看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。">
+<meta name="twitter:description" content="以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，Promise,async,await看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/pokerfaceSad/imgRepo/master/blogImg/event_loop2.png">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
@@ -187,7 +187,7 @@
 
     <div class="article-entry" itemprop="articleBody">
       
-        <p>以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，<code>Promise, async, await</code>看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。</p>
+        <p>以前没有对异步这种调用方式有过细究，接触到Node.js之后处处都是异步，<code>Promise</code>,<code>async</code>,<code>await</code>看的人云里雾里，主要是对事件循环这种模式没有理解。其实要是放在Web Server或者GUI的场景下就会发现这些异步特性好理解很多。</p>
 <a id="more"></a>
 <h2 id="1-Node-js中的事件循环"><a href="#1-Node-js中的事件循环" class="headerlink" title="1. Node.js中的事件循环"></a>1. Node.js中的事件循环</h2><p>Node.js的代码分为同步部分和异步部分，同步部分用于定义异步任务，异步部分在事件循环中被触发时执行。这相当于写GUI程序时，先定义组件和组件的监听事件，然后再循环监听是否有对应事件发生。</p>
 <p>同步部分先于异步部分执行。同步部分的代码按顺序执行，异步部分的代码按照事件循环的循环顺序执行。一个Node.js程序开始执行后，先执行完所有的同步任务，然后进入事件循环执行异步任务。</p>
