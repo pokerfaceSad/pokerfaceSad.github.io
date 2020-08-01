@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>关于ProtoBuf与Device Plugin | xinyuan的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1. gRPC &amp;amp; ProtoBuf1.1 什么是gRPC &amp;amp; ProtoBuf？gRPC是Google开源的一个RPC框架。RPC（Remote Procedure Call）即远程过程调用，使得用户能够直接调用远程位置上的方法，就像在调用本地的方法一样。gRPC默认采用ProtoBuf作为接口定义语言（Interface Definition Language， IDL）来定义">
+  <meta name="description" content="Device Plugin是Kubernetes为了使得集群扩展更多第三方计算资源而设计的接口，其中通信采用gRPC协议，接口定义采用ProtoBuf协议。">
 <meta name="keywords" content="kubernetes,Device Plugin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于ProtoBuf与Device Plugin">
 <meta property="og:url" content="http://yoursite.com/2020/07/15/关于ProtoBuf与Device Plugin/index.html">
 <meta property="og:site_name" content="xinyuan的blog">
-<meta property="og:description" content="1. gRPC &amp;amp; ProtoBuf1.1 什么是gRPC &amp;amp; ProtoBuf？gRPC是Google开源的一个RPC框架。RPC（Remote Procedure Call）即远程过程调用，使得用户能够直接调用远程位置上的方法，就像在调用本地的方法一样。gRPC默认采用ProtoBuf作为接口定义语言（Interface Definition Language， IDL）来定义">
+<meta property="og:description" content="Device Plugin是Kubernetes为了使得集群扩展更多第三方计算资源而设计的接口，其中通信采用gRPC协议，接口定义采用ProtoBuf协议。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-08-01T15:51:18.728Z">
+<meta property="og:updated_time" content="2020-08-01T15:57:54.457Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于ProtoBuf与Device Plugin">
-<meta name="twitter:description" content="1. gRPC &amp;amp; ProtoBuf1.1 什么是gRPC &amp;amp; ProtoBuf？gRPC是Google开源的一个RPC框架。RPC（Remote Procedure Call）即远程过程调用，使得用户能够直接调用远程位置上的方法，就像在调用本地的方法一样。gRPC默认采用ProtoBuf作为接口定义语言（Interface Definition Language， IDL）来定义">
+<meta name="twitter:description" content="Device Plugin是Kubernetes为了使得集群扩展更多第三方计算资源而设计的接口，其中通信采用gRPC协议，接口定义采用ProtoBuf协议。">
   
     <link rel="alternative" href="/atom.xml" title="xinyuan的blog" type="application/atom+xml">
   
@@ -185,7 +185,9 @@
 
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1-gRPC-amp-ProtoBuf"><a href="#1-gRPC-amp-ProtoBuf" class="headerlink" title="1. gRPC &amp; ProtoBuf"></a>1. gRPC &amp; ProtoBuf</h2><h3 id="1-1-什么是gRPC-amp-ProtoBuf？"><a href="#1-1-什么是gRPC-amp-ProtoBuf？" class="headerlink" title="1.1 什么是gRPC &amp; ProtoBuf？"></a>1.1 什么是gRPC &amp; ProtoBuf？</h3><p>gRPC是Google开源的一个<strong>RPC框架</strong>。RPC（Remote Procedure Call）即远程过程调用，使得用户能够直接调用远程位置上的方法，就像在调用本地的方法一样。gRPC默认采用ProtoBuf作为<strong>接口定义语言（Interface Definition Language， IDL）</strong>来定义gRPC服务。</p>
+        <p>Device Plugin是Kubernetes为了使得集群扩展更多第三方计算资源而设计的接口，其中通信采用gRPC协议，接口定义采用ProtoBuf协议。</p>
+<a id="more"></a>
+<h2 id="1-gRPC-amp-ProtoBuf"><a href="#1-gRPC-amp-ProtoBuf" class="headerlink" title="1. gRPC &amp; ProtoBuf"></a>1. gRPC &amp; ProtoBuf</h2><h3 id="1-1-什么是gRPC-amp-ProtoBuf？"><a href="#1-1-什么是gRPC-amp-ProtoBuf？" class="headerlink" title="1.1 什么是gRPC &amp; ProtoBuf？"></a>1.1 什么是gRPC &amp; ProtoBuf？</h3><p>gRPC是Google开源的一个<strong>RPC框架</strong>。RPC（Remote Procedure Call）即远程过程调用，使得用户能够直接调用远程位置上的方法，就像在调用本地的方法一样。gRPC默认采用ProtoBuf作为<strong>接口定义语言（Interface Definition Language， IDL）</strong>来定义gRPC服务。</p>
 <p>ProtoBuf是Google开源的一个<strong>序列化方案</strong>，类似于XML和JSON，但与XML和JSON不同的是ProtoBuf不仅可以用于序列化数据，还可以作为IDL来定义gRPC服务。其优点一方面是语言无关和平台无关带来的<strong>通用性强</strong>，另一方面是其二进制的数据格式带来的<strong>传输效率高</strong>。</p>
 <p>总的来说，gRPC负责调用者与远端之间的数据传输，而ProtoBuf负责这一过程中的数据序列化，减轻了数据载荷并加快了数据编解码的过程，使得RPC的过程更加高效。</p>
 <p>使用ProtoBuf定义一个服务的过程如下：</p>
@@ -438,6 +440,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">虚拟机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kubernetes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -451,18 +465,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">虚拟机</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">kubernetes</a>
               </li>
              
               <li class="article-tag-list-item">
